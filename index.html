@@ -5,629 +5,607 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Empath Travel Agency — Luxembourg Job Placement</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
-:root {
-  --navy:       #080f1e;
-  --navy-mid:   #0e1d35;
-  --navy-card:  #111f38;
-  --navy-light: #162d4f;
-  --gold:       #c9a84c;
-  --gold-light: #e2c06a;
-  --gold-pale:  #f5e8c0;
-  --red:        #c0392b;
-  --lux-blue:   #003f8a;
-  --lux-red:    #ef3340;
-  --cream:      #faf7f2;
-  --white:      #ffffff;
-  --muted:      #7a8fa6;
-  --border:     rgba(201,168,76,0.22);
-  --border-dim: rgba(255,255,255,0.07);
+:root{
+  --navy:#0a1628;--navy-mid:#112240;--navy-card:#1a3a5c;--navy-lite:#162d4f;
+  --gold:#c9a84c;--gold-lt:#e8c97a;--gold-pale:#f5e8c0;
+  --white:#ffffff;--muted:#8899aa;--border:rgba(201,168,76,.25);--bdim:rgba(255,255,255,.07);
+  --red:#e74c3c;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'Jost',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:.4;}
 
-/* NOISE */
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:998;}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 5%;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,168,76,.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;letter-spacing:.05em;color:var(--gold-lt);text-decoration:none;}
+.nav-logo span{color:var(--white);font-style:italic;font-weight:300;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--muted);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:color .3s;}
+.nav-links a:hover{color:var(--gold-lt);}
+.nav-cta{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.55rem 1.5rem;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.nav-cta:hover{background:var(--gold);color:var(--navy);}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 5%;background:rgba(8,15,30,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
-.nav-logo{display:flex;align-items:center;gap:0.9rem;text-decoration:none;}
-.nav-logo-icon{width:40px;height:40px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.2rem;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
-.nav-logo-text{line-height:1.1;}
-.nav-logo-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--gold-light);}
-.nav-logo-sub{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);}
-.nav-flag{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);letter-spacing:0.1em;}
-.lux-flag{display:flex;flex-direction:column;width:26px;height:18px;border-radius:2px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);}
-.lux-flag span{flex:1;display:block;}
-.lux-flag span:nth-child(1){background:#EF3340;}
-.lux-flag span:nth-child(2){background:#ffffff;}
-.lux-flag span:nth-child(3){background:#00A3E0;}
-.nav-cta{background:var(--gold);color:var(--navy);padding:0.55rem 1.5rem;font-family:'Jost',sans-serif;font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;border:none;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.3s;}
-.nav-cta:hover{background:var(--gold-light);}
-
-/* ── HERO ── */
+/* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:8rem 5% 5rem;}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#080f1e 0%,#0e1d35 50%,#071628 100%);}
-.hero-grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:60px 60px;}
-.hero-glow{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 65%);top:-200px;right:-200px;}
-.hero-glow-2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,63,138,0.15) 0%,transparent 65%);bottom:-100px;left:-100px;}
-
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,.12) 0%,transparent 60%),linear-gradient(160deg,#0a1628 0%,#0d1f3c 40%,#091529 100%);}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 70% 15%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 20% 45%,rgba(201,168,76,.5) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 65% 35%,rgba(201,168,76,.4) 0%,transparent 100%);}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:fl 8s ease-in-out infinite;}
+.orb1{width:500px;height:500px;top:-100px;left:-150px;background:rgba(201,168,76,.06);animation-delay:0s;}
+.orb2{width:400px;height:400px;bottom:-80px;right:-100px;background:rgba(17,34,64,.9);animation-delay:3s;}
+@keyframes fl{0%,100%{transform:translateY(0);}50%{transform:translateY(-30px);}}
 .hero-content{position:relative;z-index:2;max-width:700px;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:0.7rem;border:1px solid var(--border);padding:0.4rem 1.1rem;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.06);margin-bottom:2rem;animation:fadeUp 0.8s ease 0.2s both;}
-.hero-eyebrow .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s ease infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.6rem,6vw,5.5rem);font-weight:300;line-height:1.08;margin-bottom:1.5rem;animation:fadeUp 0.8s ease 0.4s both;}
-.hero-title strong{font-weight:700;display:block;}
-.hero-title em{font-style:italic;color:var(--gold-light);}
-.hero-desc{font-size:1rem;color:var(--muted);line-height:1.8;max-width:520px;margin-bottom:2.5rem;font-weight:300;animation:fadeUp 0.8s ease 0.6s both;}
-.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeUp 0.8s ease 0.8s both;}
-.btn-gold{background:var(--gold);color:var(--navy);padding:1rem 2.5rem;font-family:'Jost',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:all 0.3s;text-decoration:none;display:inline-block;}
-.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 10px 35px rgba(201,168,76,0.3);}
-.btn-outline{background:transparent;color:var(--white);padding:1rem 2.5rem;border:1px solid rgba(255,255,255,0.2);font-family:'Jost',sans-serif;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block;}
+.hero-badge{display:inline-flex;align-items:center;gap:.6rem;border:1px solid var(--border);padding:.45rem 1.2rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,.06);margin-bottom:2rem;animation:fadeUp 1s ease .2s both;}
+.hero-badge::before,.hero-badge::after{content:'✦';font-size:.6rem;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,7rem);font-weight:300;line-height:1.05;color:var(--white);animation:fadeUp 1s ease .4s both;}
+.hero-title em{font-style:italic;color:var(--gold-lt);display:block;}
+.hero-sub{font-size:1rem;font-weight:300;color:var(--muted);max-width:520px;margin:1.5rem 0 3rem;line-height:1.8;animation:fadeUp 1s ease .6s both;}
+.hero-actions{display:flex;gap:1.2rem;flex-wrap:wrap;animation:fadeUp 1s ease .8s both;}
+.btn-primary{background:var(--gold);color:var(--navy);padding:1rem 2.8rem;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;font-weight:600;transition:all .3s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+.btn-primary:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.3);}
+.btn-outline{background:transparent;color:var(--white);padding:1rem 2.8rem;border:1px solid rgba(255,255,255,.25);font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.6rem;color:var(--muted);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;animation:fadeUp 1s ease 1.2s both;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(180deg,var(--gold) 0%,transparent 100%);animation:sp 2s ease infinite;}
+@keyframes sp{0%,100%{opacity:.3;}50%{opacity:1;}}
 
-.hero-right{position:absolute;right:5%;top:50%;transform:translateY(-50%);z-index:2;animation:fadeUp 0.8s ease 1s both;}
-.luxembourg-card{background:var(--navy-card);border:1px solid var(--border);padding:2rem;width:280px;}
-.lux-card-flag{display:flex;height:28px;border-radius:2px;overflow:hidden;margin-bottom:1.2rem;border:1px solid rgba(255,255,255,0.1);}
-.lux-card-flag span{flex:1;}
-.lux-card-flag span:nth-child(1){background:#EF3340;}
-.lux-card-flag span:nth-child(2){background:#ffffff;}
-.lux-card-flag span:nth-child(3){background:#00A3E0;}
-.lux-card-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--white);margin-bottom:0.3rem;}
-.lux-card-sub{font-size:0.7rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.5rem;}
-.lux-stat{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:1px solid var(--border-dim);}
+/* Luxembourg card */
+.hero-card{position:absolute;right:5%;top:50%;transform:translateY(-50%);z-index:2;animation:fadeUp 1s ease 1s both;}
+.lux-card{background:var(--navy-card);border:1px solid var(--border);padding:2rem;width:270px;}
+.lux-flag{display:flex;height:26px;border-radius:2px;overflow:hidden;margin-bottom:1.2rem;border:1px solid rgba(255,255,255,.1);}
+.lux-flag span:nth-child(1){flex:1;background:#EF3340;}
+.lux-flag span:nth-child(2){flex:1;background:#fff;}
+.lux-flag span:nth-child(3){flex:1;background:#00A3E0;}
+.lux-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;margin-bottom:.3rem;}
+.lux-sub{font-size:.68rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.3rem;}
+.lux-stat{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--bdim);}
 .lux-stat:last-child{border-bottom:none;}
-.lux-stat-label{font-size:0.75rem;color:var(--muted);}
-.lux-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--gold-light);}
+.lux-stat-lbl{font-size:.72rem;color:var(--muted);}
+.lux-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--gold-lt);}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── STATS BAR ── */
+/* STATS BAR */
 .stats-bar{background:var(--navy-mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);}
-.stat-item{padding:2rem;text-align:center;border-right:1px solid var(--border-dim);}
-.stat-item:last-child{border-right:none;}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;color:var(--gold-light);line-height:1;}
-.stat-lbl{font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:0.4rem;}
+.s-item{padding:2.5rem;text-align:center;border-right:1px solid var(--bdim);}
+.s-item:last-child{border-right:none;}
+.s-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:600;color:var(--gold-lt);line-height:1;}
+.s-lbl{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.4rem;}
 
-/* ── SECTION BASE ── */
-.section{padding:6rem 5%;}
-.sec-eyebrow{font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.8rem;}
-.sec-eyebrow::after{content:'';flex:1;max-width:50px;height:1px;background:var(--border);}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;line-height:1.2;color:var(--white);}
-.sec-title em{font-style:italic;color:var(--gold-light);}
-.sec-sub{font-size:0.9rem;color:var(--muted);margin-top:0.8rem;font-weight:300;line-height:1.8;max-width:520px;}
+/* SECTION BASE */
+.sec{padding:7rem 5%;}
+.sec-header{text-align:center;margin-bottom:4rem;}
+.eye{font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:1rem;}
+.eye::before,.eye::after{content:'';flex:1;max-width:60px;height:1px;background:var(--border);}
+.h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:300;line-height:1.2;color:var(--white);}
+.h2 em{font-style:italic;color:var(--gold-lt);}
+.sec-sub{font-size:.95rem;color:var(--muted);margin-top:1rem;font-weight:300;line-height:1.8;max-width:500px;margin-left:auto;margin-right:auto;}
 
-/* ── JOBS GRID ── */
-.jobs-section{background:var(--navy-mid);padding:6rem 5%;}
-.jobs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem;}
-.job-card{background:var(--navy-card);border:1px solid var(--border-dim);padding:2rem 1.5rem;transition:all 0.35s;cursor:pointer;position:relative;overflow:hidden;}
-.job-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s;}
-.job-card:hover{border-color:var(--border);transform:translateY(-5px);background:var(--navy-light);}
-.job-card:hover::before{transform:scaleX(1);}
-.job-icon{font-size:2rem;margin-bottom:1rem;display:block;}
-.job-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
-.job-detail{font-size:0.75rem;color:var(--muted);line-height:1.6;}
-.job-tag{display:inline-block;margin-top:0.8rem;padding:0.25rem 0.7rem;background:rgba(201,168,76,0.1);border:1px solid var(--border);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
+/* JOBS */
+.jobs-sec{background:var(--navy-mid);padding:7rem 5%;}
+.jobs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+.j-card{background:var(--navy);border:1px solid var(--bdim);padding:1.8rem 1.5rem;transition:all .4s;position:relative;overflow:hidden;}
+.j-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .4s;}
+.j-card:hover{border-color:var(--border);transform:translateY(-5px);background:var(--navy-lite);}
+.j-card:hover::before{transform:scaleX(1);}
+.j-icon{font-size:2rem;margin-bottom:1rem;display:block;}
+.j-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--white);margin-bottom:.5rem;}
+.j-detail{font-size:.75rem;color:var(--muted);line-height:1.6;}
+.j-tag{display:inline-block;margin-top:.8rem;padding:.25rem .7rem;background:rgba(201,168,76,.1);border:1px solid var(--border);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);}
 
-/* ── REQUIREMENTS ── */
-.requirements{padding:6rem 5%;background:var(--navy);}
-.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3.5rem;}
+/* REQUIREMENTS */
+.req-sec{padding:7rem 5%;}
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
 .req-list{display:flex;flex-direction:column;gap:1.2rem;}
-.req-item{display:flex;gap:1.2rem;align-items:flex-start;padding:1.5rem;background:var(--navy-card);border:1px solid var(--border-dim);transition:border-color 0.3s;}
+.req-item{display:flex;gap:1.2rem;padding:1.5rem;background:var(--navy-card);border:1px solid var(--bdim);transition:border-color .3s;}
 .req-item:hover{border-color:var(--border);}
-.req-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold);opacity:0.5;line-height:1;flex-shrink:0;width:2rem;text-align:center;}
-.req-info{}
-.req-name{font-size:0.95rem;font-weight:600;color:var(--white);margin-bottom:0.3rem;}
-.req-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;}
-.req-badge{display:inline-block;margin-top:0.5rem;padding:0.2rem 0.7rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;}
-.req-badge.required{background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.3);color:#e74c3c;}
-.req-badge.optional{background:rgba(201,168,76,0.1);border:1px solid var(--border);color:var(--gold);}
+.req-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold);opacity:.5;line-height:1;flex-shrink:0;width:2rem;text-align:center;}
+.req-name{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:.3rem;}
+.req-desc{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.req-badge{display:inline-block;margin-top:.5rem;padding:.2rem .7rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;}
+.req-r{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);color:#e74c3c;}
+.req-o{background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);}
+.agency-card{background:linear-gradient(135deg,var(--navy-lite) 0%,var(--navy-mid) 100%);border:1px solid var(--border);padding:3rem;position:relative;overflow:hidden;}
+.agency-card::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 65%);}
+.a-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:var(--navy);padding:.4rem 1rem;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:1.5rem;}
+.a-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--white);margin-bottom:1rem;line-height:1.2;}
+.a-title em{font-style:italic;color:var(--gold-lt);}
+.a-desc{font-size:.88rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+.a-svcs{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;}
+.a-svc{display:flex;align-items:center;gap:.8rem;font-size:.85rem;color:rgba(255,255,255,.8);}
+.a-chk{width:20px;height:20px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--navy);font-weight:700;flex-shrink:0;}
 
-.agency-help-card{background:linear-gradient(135deg,var(--navy-light) 0%,var(--navy-mid) 100%);border:1px solid var(--border);padding:3rem;position:relative;overflow:hidden;}
-.agency-help-card::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 65%);}
-.help-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--gold);color:var(--navy);padding:0.4rem 1rem;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;margin-bottom:1.5rem;}
-.help-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--white);margin-bottom:1rem;line-height:1.2;}
-.help-title em{font-style:italic;color:var(--gold-light);}
-.help-desc{font-size:0.88rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
-.help-services{display:flex;flex-direction:column;gap:0.8rem;margin-bottom:2rem;}
-.help-service{display:flex;align-items:center;gap:0.8rem;font-size:0.85rem;color:rgba(255,255,255,0.8);}
-.help-check{width:20px;height:20px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--navy);font-weight:700;flex-shrink:0;}
-.help-price{border-top:1px solid var(--border);padding-top:1.5rem;}
-.help-price-label{font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;}
-.help-price-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold-light);}
-.help-price-note{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;}
+/* FORM SECTION */
+.form-sec{padding:7rem 5%;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(201,168,76,.07) 0%,transparent 60%),var(--navy);}
+.form-wrap{max-width:780px;margin:0 auto;}
+.form-box{background:var(--navy-mid);border:1px solid var(--border);position:relative;overflow:hidden;}
+.form-box::before{content:'';position:absolute;top:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.form-inner{padding:4rem;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--white);margin-bottom:.5rem;}
+.form-title em{font-style:italic;color:var(--gold-lt);}
+.form-sub{font-size:.88rem;color:var(--muted);margin-bottom:3rem;font-weight:300;line-height:1.7;}
+.divider{height:1px;background:var(--border);margin:2rem 0;}
 
-/* ── FORM ── */
-.form-section{padding:6rem 5%;background:var(--navy-mid);}
-.form-container{max-width:820px;margin:0 auto;}
-.form-box{background:var(--navy-card);border:1px solid var(--border);position:relative;overflow:hidden;}
-.form-box-top-line{height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.form-box-inner{padding:3.5rem;}
-.form-head{margin-bottom:2.5rem;}
-.form-h{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--white);}
-.form-h em{font-style:italic;color:var(--gold-light);}
-.form-p{font-size:0.85rem;color:var(--muted);margin-top:0.5rem;line-height:1.7;}
-.form-app-id-preview{display:flex;align-items:center;gap:1rem;background:rgba(201,168,76,0.06);border:1px solid var(--border);padding:1rem 1.5rem;margin-bottom:2.5rem;}
-.app-id-icon{font-size:1.5rem;}
-.app-id-info{}
-.app-id-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;}
-.app-id-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--white);letter-spacing:0.05em;}
-.app-id-note{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
-
-/* Divider */
-.form-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:2rem 0;}
-.form-section-label{font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;}
-.form-section-label::after{content:'';flex:1;height:1px;background:var(--border-dim);}
+/* App ID box */
+.appid-box{display:flex;align-items:center;gap:1rem;background:rgba(201,168,76,.06);border:1px solid var(--border);padding:1rem 1.5rem;margin-bottom:2.5rem;}
+.appid-icon{font-size:1.5rem;}
+.appid-lbl{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem;}
+.appid-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--white);letter-spacing:.05em;}
+.appid-note{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
 
 /* Fields */
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
-.form-row.full{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.4rem;}
-.f-label{font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:500;}
-.f-input,.f-select,.f-textarea{background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.09);color:var(--white);padding:0.9rem 1.2rem;font-family:'Jost',sans-serif;font-size:0.88rem;font-weight:300;outline:none;width:100%;transition:all 0.3s;border-radius:0;-webkit-appearance:none;}
-.f-input::placeholder,.f-textarea::placeholder{color:rgba(255,255,255,0.18);}
-.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--gold);background:rgba(201,168,76,0.05);}
-.f-input.error,.f-select.error{border-color:#e74c3c;background:rgba(231,76,60,0.04);}
-.f-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1.2rem center;background-color:rgba(255,255,255,0.035);padding-right:3rem;cursor:pointer;}
-.f-select option{background:#0e1d35;color:#fff;}
-.f-textarea{resize:vertical;min-height:100px;line-height:1.7;}
-.f-err{font-size:0.7rem;color:#e74c3c;margin-top:0.25rem;display:none;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.f-g{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem;}
+.f-lbl{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+.req{color:var(--red);margin-left:2px;}
+.f-in,.f-sel,.f-ta{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--white);padding:.9rem 1.2rem;font-family:'Jost',sans-serif;font-size:.9rem;font-weight:300;outline:none;width:100%;transition:all .3s;border-radius:0;-webkit-appearance:none;}
+.f-in::placeholder,.f-ta::placeholder{color:rgba(255,255,255,.2);}
+.f-in:focus,.f-sel:focus,.f-ta:focus{border-color:var(--gold);background:rgba(201,168,76,.06);}
+.f-in.err,.f-sel.err{border-color:var(--red);background:rgba(231,76,60,.04);}
+.f-sel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1.2rem center;background-color:rgba(255,255,255,.04);padding-right:3rem;cursor:pointer;}
+.f-sel option{background:#112240;color:#fff;}
+.f-ta{resize:vertical;min-height:130px;line-height:1.7;}
+.f-err{font-size:.7rem;color:var(--red);margin-top:.3rem;display:none;}
 .f-err.show{display:block;}
+.sec-lbl{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--bdim);}
 
-/* Phone with code */
-.phone-wrapper{display:flex;gap:0;}
-.phone-code{width:130px;flex-shrink:0;border-right:none!important;}
-.phone-num{flex:1;}
+/* Phone */
+.ph-wrap{display:flex;}
+.ph-code{width:130px;flex-shrink:0;}
+.ph-num{border-left:none!important;}
 
-/* Job radio cards */
-.job-radio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:0.3rem;}
-.job-radio{position:relative;}
-.job-radio input{position:absolute;opacity:0;width:0;height:0;}
-.job-radio-label{display:flex;align-items:center;gap:0.6rem;padding:0.8rem 1rem;border:1px solid rgba(255,255,255,0.09);cursor:pointer;font-size:0.82rem;color:var(--muted);transition:all 0.3s;line-height:1.3;}
-.job-radio-label .jr-icon{font-size:1.1rem;flex-shrink:0;}
-.job-radio-label::before{content:'';width:10px;height:10px;border:1px solid var(--muted);border-radius:50%;flex-shrink:0;transition:all 0.3s;}
-.job-radio input:checked + .job-radio-label{border-color:var(--gold);color:var(--white);background:rgba(201,168,76,0.07);}
-.job-radio input:checked + .job-radio-label::before{background:var(--gold);border-color:var(--gold);}
-.job-radio-label:hover{border-color:var(--border);color:var(--white);}
+/* Job radios */
+.job-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:.3rem;}
+.jr{position:relative;}
+.jr input{position:absolute;opacity:0;width:0;}
+.jr-lbl{display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;border:1px solid rgba(255,255,255,.09);cursor:pointer;font-size:.82rem;color:var(--muted);transition:all .3s;line-height:1.3;}
+.jr-lbl .ji{font-size:1.1rem;flex-shrink:0;}
+.jr-lbl::before{content:'';width:9px;height:9px;border:1px solid var(--muted);border-radius:50%;flex-shrink:0;transition:all .3s;}
+.jr input:checked+.jr-lbl{border-color:var(--gold);color:var(--white);background:rgba(201,168,76,.07);}
+.jr input:checked+.jr-lbl::before{background:var(--gold);border-color:var(--gold);}
+.jr-lbl:hover{border-color:var(--border);color:var(--white);}
+
+/* Docs */
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.5rem;}
+.doc-item{display:flex;align-items:center;gap:.7rem;padding:.8rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--bdim);cursor:pointer;transition:all .3s;}
+.doc-item:hover{border-color:var(--border);}
+.doc-item input{display:none;}
+.doc-box{width:18px;height:18px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.doc-box::after{content:'✓';color:var(--navy);font-size:.7rem;font-weight:700;opacity:0;transition:opacity .2s;}
+.doc-item input:checked~.doc-box{background:var(--gold);border-color:var(--gold);}
+.doc-item input:checked~.doc-box::after{opacity:1;}
+.doc-lbl{font-size:.8rem;color:var(--muted);}
+.doc-item input:checked~.doc-lbl{color:var(--white);}
 
 /* Checkbox */
-.cb-group{display:flex;align-items:flex-start;gap:0.9rem;}
-.cb-group input{display:none;}
-.cb-box{width:20px;height:20px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;margin-top:1px;}
-.cb-box::after{content:'✓';color:var(--navy);font-size:0.75rem;font-weight:700;opacity:0;transition:opacity 0.2s;}
-.cb-group input:checked + .cb-box{background:var(--gold);border-color:var(--gold);}
-.cb-group input:checked + .cb-box::after{opacity:1;}
-.cb-label{font-size:0.82rem;color:var(--muted);line-height:1.7;cursor:pointer;}
-.cb-label a{color:var(--gold);text-decoration:none;}
-.cb-label a:hover{text-decoration:underline;}
+.cb-g{display:flex;align-items:flex-start;gap:.8rem;}
+.cb-g input{display:none;}
+.cb-box{width:18px;height:18px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;margin-top:2px;}
+.cb-box::after{content:'✓';color:var(--navy);font-size:.7rem;font-weight:700;opacity:0;}
+.cb-g input:checked+.cb-box{background:var(--gold);border-color:var(--gold);}
+.cb-g input:checked+.cb-box::after{opacity:1;}
+.cb-lbl{font-size:.82rem;color:var(--muted);line-height:1.6;cursor:pointer;}
+.cb-lbl a{color:var(--gold);text-decoration:none;}
 
 /* Submit */
-.submit-btn{width:100%;padding:1.3rem;background:var(--gold);color:var(--navy);border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;transition:all 0.35s;position:relative;overflow:hidden;margin-top:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.8rem;}
-.submit-btn::before{content:'';position:absolute;inset:0;background:var(--gold-light);transform:translateX(-100%);transition:transform 0.4s;}
+.submit-btn{width:100%;padding:1.2rem;background:var(--gold);color:var(--navy);border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;transition:all .3s;position:relative;overflow:hidden;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:.8rem;}
+.submit-btn::before{content:'';position:absolute;inset:0;background:var(--gold-lt);transform:translateX(-100%);transition:transform .4s;}
 .submit-btn:hover::before{transform:translateX(0);}
-.submit-btn:hover{box-shadow:0 15px 45px rgba(201,168,76,0.35);}
+.submit-btn:hover{box-shadow:0 15px 50px rgba(201,168,76,.35);}
 .submit-btn span{position:relative;z-index:1;}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
-.wa-note{text-align:center;margin-top:1rem;font-size:0.75rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;}
 
-/* ── SUCCESS OVERLAY ── */
-.success-overlay{position:fixed;inset:0;z-index:500;background:rgba(8,15,30,0.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;}
-.success-overlay.show{opacity:1;pointer-events:all;}
-.success-box{background:var(--navy-card);border:1px solid var(--border);max-width:520px;width:90%;padding:3.5rem;text-align:center;position:relative;animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;}
-@keyframes popIn{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
-.success-icon{font-size:3.5rem;margin-bottom:1rem;display:block;}
-.success-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
-.success-title em{font-style:italic;color:var(--gold-light);}
-.success-desc{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;}
-.success-id-box{background:rgba(201,168,76,0.08);border:1px solid var(--border);padding:1.2rem;margin-bottom:2rem;}
-.success-id-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;}
-.success-id-number{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--white);}
-.success-meta{font-size:0.78rem;color:var(--muted);margin-top:0.3rem;}
-.success-actions{display:flex;flex-direction:column;gap:0.8rem;}
-.success-wa-btn{background:#25D366;color:#fff;padding:1rem 2rem;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
-.success-wa-btn:hover{background:#1ebe5d;box-shadow:0 10px 30px rgba(37,211,102,0.35);}
-.success-close{background:transparent;color:var(--muted);border:1px solid var(--border-dim);padding:0.8rem;cursor:pointer;font-family:'Jost',sans-serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.3s;}
-.success-close:hover{color:var(--white);border-color:var(--border);}
+/* SUCCESS OVERLAY */
+.s-ov{position:fixed;inset:0;z-index:500;background:rgba(10,22,40,.97);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .4s;}
+.s-ov.show{opacity:1;pointer-events:all;}
+.s-box{background:var(--navy-mid);border:1px solid var(--border);max-width:520px;width:100%;overflow:hidden;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes popIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.s-bar{height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.s-in{padding:3rem;text-align:center;}
+.s-icon{font-size:3.5rem;margin-bottom:1rem;display:block;}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--white);margin-bottom:.5rem;}
+.s-title em{font-style:italic;color:var(--gold-lt);}
+.s-desc{font-size:.87rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
+.s-id{background:rgba(201,168,76,.08);border:1px solid var(--border);padding:1.2rem;margin-bottom:1.5rem;}
+.s-id-lbl{font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
+.s-id-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--white);}
+.s-id-meta{font-size:.78rem;color:var(--muted);margin-top:.3rem;}
+.s-db{display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:rgba(46,204,113,.9);background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);padding:.8rem 1rem;margin-bottom:1.5rem;text-align:left;}
+.s-btns{display:flex;flex-direction:column;gap:.8rem;}
+.s-wa{background:linear-gradient(90deg,#128C7E,#25D366);color:#fff;padding:1rem 2rem;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.6rem;}
+.s-wa:hover{filter:brightness(1.1);}
+.s-close{background:transparent;color:var(--muted);border:1px solid var(--bdim);padding:.8rem;cursor:pointer;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;transition:all .3s;}
+.s-close:hover{color:var(--white);border-color:var(--border);}
 
-/* ── FOOTER ── */
-footer{background:#050b14;padding:3rem 5%;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;}
-.foot-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--gold-light);}
-.foot-logo span{font-style:italic;font-weight:300;color:var(--white);}
-.foot-links{display:flex;gap:2rem;}
-.foot-links a{font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.3s;}
-.foot-links a:hover{color:var(--gold);}
-.foot-copy{font-size:0.72rem;color:rgba(122,143,166,0.5);}
+/* ADMIN OVERLAY */
+.adm-ov{position:fixed;inset:0;z-index:600;background:rgba(4,9,18,.98);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s;overflow-y:auto;}
+.adm-ov.show{opacity:1;pointer-events:all;}
+.adm-login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.login-box{background:var(--navy-mid);border:1px solid var(--border);width:100%;max-width:400px;overflow:hidden;}
+.login-bar{height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.login-in{padding:3rem;}
+.login-icon{font-size:2.5rem;margin-bottom:1rem;display:block;text-align:center;}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--white);text-align:center;margin-bottom:.3rem;}
+.login-sub{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:2rem;}
+.login-err{font-size:.78rem;color:var(--red);text-align:center;margin-bottom:1rem;display:none;}
+.login-err.show{display:block;}
+.adm-dash{display:none;flex-direction:column;min-height:100vh;}
+.adm-dash.show{display:flex;}
+.adm-nav{background:var(--navy-mid);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.adm-brand{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--gold-lt);}
+.adm-brand span{font-weight:300;font-style:italic;color:var(--white);}
+.adm-nav-r{display:flex;align-items:center;gap:1rem;}
+.ab{padding:.5rem 1.2rem;font-family:'Jost',sans-serif;font-size:.75rem;cursor:pointer;transition:all .3s;letter-spacing:.1em;text-transform:uppercase;border:none;}
+.ab-g{background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);}
+.ab-g:hover{background:var(--gold);color:var(--navy);}
+.ab-r{background:transparent;border:1px solid rgba(231,76,60,.3);color:var(--red);}
+.ab-r:hover{background:var(--red);color:var(--white);}
+.adm-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border);flex-shrink:0;}
+.as-item{background:var(--navy-mid);padding:1.5rem;text-align:center;}
+.as-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold-lt);line-height:1;}
+.as-lbl{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.3rem;}
+.adm-content{flex:1;padding:2rem;}
+.adm-toolbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.a-search{flex:1;min-width:200px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--white);padding:.7rem 1rem;font-family:'Jost',sans-serif;font-size:.85rem;outline:none;transition:border-color .3s;}
+.a-search:focus{border-color:var(--gold);}
+.a-search::placeholder{color:rgba(255,255,255,.25);}
+.a-filter{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--white);padding:.7rem 1rem;font-family:'Jost',sans-serif;font-size:.82rem;cursor:pointer;outline:none;-webkit-appearance:none;}
+.a-filter option{background:#112240;}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);}
+.adm-tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.adm-tbl th{background:var(--navy-mid);color:var(--gold);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;padding:.9rem 1rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.adm-tbl td{padding:.9rem 1rem;border-bottom:1px solid var(--bdim);color:rgba(255,255,255,.8);vertical-align:top;}
+.adm-tbl tr:hover td{background:rgba(255,255,255,.02);}
+.adm-tbl tr:last-child td{border-bottom:none;}
+.app-id{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--gold-lt);white-space:nowrap;}
+.st-sel{background:transparent;border:1px solid var(--border);color:var(--white);padding:.3rem .5rem;font-family:'Jost',sans-serif;font-size:.72rem;cursor:pointer;outline:none;width:130px;}
+.st-sel option{background:#112240;}
+.exp-btn{background:transparent;border:1px solid var(--border);color:var(--gold);padding:.3rem .7rem;font-family:'Jost',sans-serif;font-size:.7rem;cursor:pointer;transition:all .3s;text-transform:uppercase;white-space:nowrap;}
+.exp-btn:hover{background:var(--gold);color:var(--navy);}
+.det-row{display:none;}
+.det-row.open{display:table-row;}
+.det-cell{background:var(--navy-mid)!important;padding:1.5rem!important;border-bottom:2px solid var(--border)!important;}
+.det-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.det-key{font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.det-val{font-size:.85rem;color:var(--white);line-height:1.5;}
+.no-data{text-align:center;padding:4rem;color:var(--muted);}
 
-/* WhatsApp Float */
-.wa-float{position:fixed;bottom:2rem;right:2rem;z-index:300;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.5rem;box-shadow:0 6px 25px rgba(37,211,102,0.45);animation:wap 2.5s ease infinite;transition:transform 0.3s;}
-.wa-float:hover{transform:scale(1.12);}
-@keyframes wap{0%,100%{box-shadow:0 6px 25px rgba(37,211,102,0.4);}50%{box-shadow:0 6px 45px rgba(37,211,102,0.65);}}
+/* FOOTER */
+footer{background:#060e1c;padding:5rem 5% 2.5rem;border-top:1px solid var(--border);}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;padding-bottom:4rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.foot-brand{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--gold-lt);}
+.foot-brand span{font-style:italic;font-weight:300;color:var(--white);}
+.foot-tag{font-size:.82rem;color:var(--muted);line-height:1.7;max-width:280px;margin:.8rem 0 1.5rem;}
+.foot-contact{display:flex;align-items:center;gap:.7rem;font-size:.82rem;color:var(--muted);text-decoration:none;transition:color .3s;margin-bottom:.6rem;}
+.foot-contact:hover{color:var(--gold);}
+.foot-col{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+.foot-links{display:flex;flex-direction:column;gap:.8rem;list-style:none;}
+.foot-links a{font-size:.85rem;color:var(--muted);text-decoration:none;transition:color .3s;}
+.foot-links a:hover{color:var(--white);}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:2.5rem;flex-wrap:wrap;gap:1rem;}
+.foot-copy{font-size:.78rem;color:rgba(136,153,170,.5);}
+.adm-link{background:none;border:none;color:rgba(136,153,170,.2);font-size:.72rem;cursor:pointer;padding:0;transition:color .3s;}
+.adm-link:hover{color:var(--gold);}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.hero-right{display:none;}}
-@media(max-width:900px){.jobs-grid{grid-template-columns:repeat(2,1fr);}.req-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}.stats-bar{grid-template-columns:repeat(2,1fr);}.job-radio-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.jobs-grid{grid-template-columns:1fr;}.form-box-inner{padding:2rem 1.5rem;}.hero-title{font-size:2.4rem;}.job-radio-grid{grid-template-columns:1fr 1fr;}.phone-wrapper{flex-direction:column;}.phone-code{width:100%;}}
+/* WA float */
+.wa-float{position:fixed;bottom:2.5rem;right:2.5rem;z-index:200;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.6rem;box-shadow:0 8px 30px rgba(37,211,102,.4);animation:wap 2.5s ease infinite;transition:transform .3s;}
+.wa-float:hover{transform:scale(1.1);}
+@keyframes wap{0%,100%{box-shadow:0 8px 30px rgba(37,211,102,.4);}50%{box-shadow:0 8px 50px rgba(37,211,102,.65);}}
+
+/* Responsive */
+@media(max-width:1100px){.hero-card{display:none;}.foot-top{grid-template-columns:1fr 1fr;gap:2.5rem;}}
+@media(max-width:900px){.jobs-grid{grid-template-columns:repeat(2,1fr);}.req-grid{grid-template-columns:1fr;}.f-row{grid-template-columns:1fr;}.stats-bar{grid-template-columns:repeat(2,1fr);}.adm-stats{grid-template-columns:repeat(3,1fr);}.det-grid{grid-template-columns:1fr 1fr;}.job-grid{grid-template-columns:repeat(2,1fr);}.docs-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){.jobs-grid{grid-template-columns:1fr;}.form-inner{padding:2rem 1.5rem;}.hero-title{font-size:2.8rem;}.job-grid{grid-template-columns:1fr 1fr;}.foot-top{grid-template-columns:1fr;}.adm-stats{grid-template-columns:repeat(2,1fr);}.det-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<!-- WhatsApp Float -->
-<a class="wa-float" href="https://wa.me/254784292069" target="_blank" title="Chat with us">💬</a>
+<a class="wa-float" href="https://wa.me/254784292069" target="_blank">💬</a>
 
 <!-- SUCCESS OVERLAY -->
-<div class="success-overlay" id="successOverlay">
-  <div class="success-box">
-    <span class="success-icon">✅</span>
-    <h2 class="success-title">Application <em>Submitted!</em></h2>
-    <p class="success-desc">Your Luxembourg job application has been received. Please send the WhatsApp message below to confirm your spot and begin document processing.</p>
-    <div class="success-id-box">
-      <div class="success-id-label">Your Application ID</div>
-      <div class="success-id-number" id="displayAppId">LUX-2026-00000</div>
-      <div class="success-meta" id="displayJobMeta">—</div>
+<div class="s-ov" id="sOv">
+  <div class="s-box">
+    <div class="s-bar"></div>
+    <div class="s-in">
+      <span class="s-icon">✅</span>
+      <h2 class="s-title">Application <em>Received!</em></h2>
+      <p class="s-desc">Your Luxembourg job application has been saved to our database. Our team will review it and contact you within 24–48 hours. Keep your Application ID for reference.</p>
+      <div class="s-id">
+        <div class="s-id-lbl">Your Application ID</div>
+        <div class="s-id-num" id="sId">LUX-2026-00000</div>
+        <div class="s-id-meta" id="sMeta">—</div>
+      </div>
+      <div class="s-db"><span>✅</span><span>Your application is <strong>saved to our database</strong>. No WhatsApp message required — our team already has your details.</span></div>
+      <div class="s-btns">
+        <button class="s-wa" id="sWaBtn">💬 Also Notify Us on WhatsApp (Optional)</button>
+        <button class="s-close" onclick="document.getElementById('sOv').classList.remove('show')">Close — Thank You!</button>
+      </div>
     </div>
-    <div class="success-actions">
-      <button class="success-wa-btn" id="sendWaBtn">
-        <span>💬</span> <span>Send Confirmation via WhatsApp</span>
-      </button>
-      <button class="success-close" onclick="closeSuccess()">Close & Return to Form</button>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div class="adm-ov" id="admOv">
+  <div class="adm-login" id="admLogin">
+    <div class="login-box">
+      <div class="login-bar"></div>
+      <div class="login-in">
+        <span class="login-icon">🔐</span>
+        <h2 class="login-title">Admin Access</h2>
+        <p class="login-sub">Empath Travel Agency — Applications Dashboard</p>
+        <div class="login-err" id="loginErr">❌ Incorrect password. Try again.</div>
+        <div class="f-g" style="margin-bottom:0;">
+          <label class="f-lbl">Password</label>
+          <input class="f-in" type="password" id="admPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="submit-btn" onclick="doLogin()" style="margin-top:1.5rem;"><span>🔓 Access Dashboard</span></button>
+        <button onclick="closeAdm()" style="background:transparent;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;width:100%;margin-top:1rem;padding:.5rem;">← Back to Website</button>
+      </div>
+    </div>
+  </div>
+  <div class="adm-dash" id="admDash">
+    <div class="adm-nav">
+      <div class="adm-brand">Empath <span>Admin Dashboard</span></div>
+      <div class="adm-nav-r">
+        <button class="ab ab-g" onclick="loadApps()">⟳ Refresh</button>
+        <button class="ab ab-r" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+    <div class="adm-stats">
+      <div class="as-item"><div class="as-num" id="stTotal">—</div><div class="as-lbl">Total Applications</div></div>
+      <div class="as-item"><div class="as-num" id="stToday">—</div><div class="as-lbl">Today</div></div>
+      <div class="as-item"><div class="as-num" id="stPend">—</div><div class="as-lbl">Pending</div></div>
+      <div class="as-item"><div class="as-num" id="stCont">—</div><div class="as-lbl">Contacted</div></div>
+      <div class="as-item"><div class="as-num" id="stVis">—</div><div class="as-lbl">Site Visitors</div></div>
+    </div>
+    <div class="adm-content">
+      <div class="adm-toolbar">
+        <input class="a-search" id="aSearch" type="text" placeholder="🔍 Search by name, email, App ID, job, country…" oninput="filterApps()"/>
+        <select class="a-filter" id="aStatus" onchange="filterApps()">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option><option value="reviewed">Reviewed</option>
+          <option value="contacted">Contacted</option><option value="completed">Completed</option>
+        </select>
+        <select class="a-filter" id="aJob" onchange="filterApps()">
+          <option value="">All Jobs</option>
+          <option>Cleaners</option><option>Warehouse Workers</option><option>Plumbers</option>
+          <option>Health Care Workers</option><option>Caregivers</option><option>Waiters</option>
+          <option>Hostess</option><option>Truck Drivers</option><option>Baristas</option>
+          <option>Security Guards</option><option>Chefs</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table class="adm-tbl">
+          <thead><tr><th>App ID</th><th>Full Name</th><th>National ID</th><th>Phone</th><th>Country</th><th>Job Applied</th><th>Submitted</th><th>Status</th><th>Details</th></tr></thead>
+          <tbody id="admBody"><tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--muted);">⏳ Loading…</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">
-    <div class="nav-logo-icon">✈</div>
-    <div class="nav-logo-text">
-      <div class="nav-logo-name">Empath Travel Agency</div>
-      <div class="nav-logo-sub">Luxembourg Job Placement</div>
-    </div>
-  </a>
-  <div class="nav-flag">
-    <div class="lux-flag"><span></span><span></span><span></span></div>
-    Luxembourg Jobs
-  </div>
+  <a class="nav-logo" href="#">Empath <span>Travel</span></a>
+  <ul class="nav-links">
+    <li><a href="#jobs">Jobs</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#apply">Apply</a></li>
+  </ul>
   <button class="nav-cta" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply Now</button>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid-lines"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-glow-2"></div>
+  <div class="hero-bg"></div><div class="stars"></div>
+  <div class="orb orb1"></div><div class="orb orb2"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="dot"></span> Now Recruiting — 2026 Intake Open</div>
-    <h1 class="hero-title">
-      Work in the Heart of<br/>
-      <strong><em>Luxembourg</em></strong>
-    </h1>
-    <p class="hero-desc">
-      Empath Travel Agency connects ambitious Africans with verified employment opportunities in Luxembourg, Europe. We handle everything — visas, documents, flights, and settlement support.
-    </p>
+    <div class="hero-badge">Premium Luxembourg Job Placement Since 2015</div>
+    <h1 class="hero-title">Journey Beyond<br/><em>the Ordinary</em></h1>
+    <p class="hero-sub">Empath Travel Agency connects ambitious Africans with verified employment opportunities in Luxembourg, Europe. We handle visas, documents, flights, and full settlement support.</p>
     <div class="hero-actions">
-      <button class="btn-gold" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply for a Job</button>
+      <button class="btn-primary" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply for a Job</button>
       <button class="btn-outline" onclick="document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">View Available Jobs</button>
     </div>
   </div>
-  <div class="hero-right">
-    <div class="luxembourg-card">
-      <div class="lux-card-flag"><span></span><span></span><span></span></div>
-      <div class="lux-card-title">Grand Duchy of Luxembourg</div>
-      <div class="lux-card-sub">Central Europe · EU Member</div>
-      <div class="lux-stat"><span class="lux-stat-label">Average Monthly Wage</span><span class="lux-stat-val">€3,200+</span></div>
-      <div class="lux-stat"><span class="lux-stat-label">Min. Legal Wage (EU)</span><span class="lux-stat-val">€2,570</span></div>
-      <div class="lux-stat"><span class="lux-stat-label">Open Positions</span><span class="lux-stat-val">200+</span></div>
-      <div class="lux-stat"><span class="lux-stat-label">Intake Year</span><span class="lux-stat-val">2026</span></div>
+  <div class="hero-card">
+    <div class="lux-card">
+      <div class="lux-flag"><span></span><span></span><span></span></div>
+      <div class="lux-title">Grand Duchy of Luxembourg</div>
+      <div class="lux-sub">Central Europe · EU Member</div>
+      <div class="lux-stat"><span class="lux-stat-lbl">Average Monthly Wage</span><span class="lux-stat-val">€3,200+</span></div>
+      <div class="lux-stat"><span class="lux-stat-lbl">Min. Legal Wage (EU)</span><span class="lux-stat-val">€2,570</span></div>
+      <div class="lux-stat"><span class="lux-stat-lbl">Open Positions</span><span class="lux-stat-val">200+</span></div>
+      <div class="lux-stat"><span class="lux-stat-lbl">Intake Year</span><span class="lux-stat-val">2026</span></div>
     </div>
   </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat-item"><div class="stat-num">2,400+</div><div class="stat-lbl">Africans Placed</div></div>
-  <div class="stat-item"><div class="stat-num">11</div><div class="stat-lbl">Job Categories</div></div>
-  <div class="stat-item"><div class="stat-num">98%</div><div class="stat-lbl">Visa Success Rate</div></div>
-  <div class="stat-item"><div class="stat-num">10 Yrs</div><div class="stat-lbl">Industry Experience</div></div>
+  <div class="s-item"><div class="s-num">2,400+</div><div class="s-lbl">Africans Placed</div></div>
+  <div class="s-item"><div class="s-num">11</div><div class="s-lbl">Job Categories</div></div>
+  <div class="s-item"><div class="s-num">98%</div><div class="s-lbl">Visa Success Rate</div></div>
+  <div class="s-item"><div class="s-num">10 Yrs</div><div class="s-lbl">Excellence</div></div>
 </div>
 
 <!-- JOBS -->
-<section class="jobs-section" id="jobs">
-  <div class="sec-eyebrow">Available Positions</div>
-  <h2 class="sec-title">Jobs Available in <em>Luxembourg</em></h2>
-  <p class="sec-sub">All positions come with legal work permits, accommodation assistance, and full orientation upon arrival.</p>
+<section class="jobs-sec" id="jobs">
+  <div class="sec-header">
+    <div class="eye">Available Positions</div>
+    <h2 class="h2">Jobs Available in <em>Luxembourg</em></h2>
+    <p class="sec-sub">All positions come with legal work permits, accommodation assistance, and full orientation upon arrival.</p>
+  </div>
   <div class="jobs-grid">
-    <div class="job-card"><span class="job-icon">🧹</span><div class="job-title">Cleaners</div><div class="job-detail">Commercial & residential cleaning for hotels, offices, and facilities across Luxembourg.</div><div class="job-tag">Immediate Openings</div></div>
-    <div class="job-card"><span class="job-icon">📦</span><div class="job-title">Warehouse Workers</div><div class="job-detail">Logistics, packing, inventory and warehouse management for distribution centres.</div><div class="job-tag">Multiple Shifts</div></div>
-    <div class="job-card"><span class="job-icon">🔧</span><div class="job-title">Plumbers</div><div class="job-detail">Skilled plumbing installation and maintenance for residential and commercial projects.</div><div class="job-tag">High Demand</div></div>
-    <div class="job-card"><span class="job-icon">🏥</span><div class="job-title">Health Care Workers</div><div class="job-detail">Nurses, care assistants and allied health professionals for hospitals and clinics.</div><div class="job-tag">Urgent Openings</div></div>
-    <div class="job-card"><span class="job-icon">🤝</span><div class="job-title">Caregivers</div><div class="job-detail">Home-based and residential care for elderly and differently-abled individuals.</div><div class="job-tag">Live-in Available</div></div>
-    <div class="job-card"><span class="job-icon">🍽</span><div class="job-title">Waiters / Waitresses</div><div class="job-detail">Front-of-house service staff for restaurants, hotels, and event catering.</div><div class="job-tag">Full & Part-Time</div></div>
-    <div class="job-card"><span class="job-icon">💃</span><div class="job-title">Hostess</div><div class="job-detail">Guest reception and hospitality hosting for restaurants and corporate events.</div><div class="job-tag">Hospitality Sector</div></div>
-    <div class="job-card"><span class="job-icon">🚛</span><div class="job-title">Truck Drivers</div><div class="job-detail">Long-haul and local delivery drivers. Valid licence required. EU routes included.</div><div class="job-tag">High Salary</div></div>
-    <div class="job-card"><span class="job-icon">☕</span><div class="job-title">Baristas</div><div class="job-detail">Speciality coffee and café service staff for upscale coffee shops and hotel lounges.</div><div class="job-tag">Multiple Locations</div></div>
-    <div class="job-card"><span class="job-icon">🛡</span><div class="job-title">Security Guards</div><div class="job-detail">Licensed security personnel for malls, corporate buildings, and events.</div><div class="job-tag">Training Provided</div></div>
-    <div class="job-card"><span class="job-icon">👨‍🍳</span><div class="job-title">Chefs</div><div class="job-detail">Skilled cooks from sous-chef to head chef for restaurants, hotels, and catering companies.</div><div class="job-tag">Premium Pay</div></div>
+    <div class="j-card"><span class="j-icon">🧹</span><div class="j-title">Cleaners</div><div class="j-detail">Commercial & residential cleaning for hotels, offices, and facilities across Luxembourg.</div><div class="j-tag">Immediate Openings</div></div>
+    <div class="j-card"><span class="j-icon">📦</span><div class="j-title">Warehouse Workers</div><div class="j-detail">Logistics, packing, inventory and warehouse management for distribution centres.</div><div class="j-tag">Multiple Shifts</div></div>
+    <div class="j-card"><span class="j-icon">🔧</span><div class="j-title">Plumbers</div><div class="j-detail">Skilled plumbing installation and maintenance for residential and commercial projects.</div><div class="j-tag">High Demand</div></div>
+    <div class="j-card"><span class="j-icon">🏥</span><div class="j-title">Health Care Workers</div><div class="j-detail">Nurses, care assistants and allied health professionals for hospitals and clinics.</div><div class="j-tag">Urgent Openings</div></div>
+    <div class="j-card"><span class="j-icon">🤝</span><div class="j-title">Caregivers</div><div class="j-detail">Home-based and residential care for elderly and differently-abled individuals.</div><div class="j-tag">Live-in Available</div></div>
+    <div class="j-card"><span class="j-icon">🍽</span><div class="j-title">Waiters / Waitresses</div><div class="j-detail">Front-of-house service staff for restaurants, hotels, and event catering.</div><div class="j-tag">Full & Part-Time</div></div>
+    <div class="j-card"><span class="j-icon">💃</span><div class="j-title">Hostess</div><div class="j-detail">Guest reception and hospitality hosting for restaurants and corporate events.</div><div class="j-tag">Hospitality Sector</div></div>
+    <div class="j-card"><span class="j-icon">🚛</span><div class="j-title">Truck Drivers</div><div class="j-detail">Long-haul and local delivery drivers. Valid licence required. EU routes included.</div><div class="j-tag">High Salary</div></div>
+    <div class="j-card"><span class="j-icon">☕</span><div class="j-title">Baristas</div><div class="j-detail">Speciality coffee and café service for upscale coffee shops and hotel lounges.</div><div class="j-tag">Multiple Locations</div></div>
+    <div class="j-card"><span class="j-icon">🛡</span><div class="j-title">Security Guards</div><div class="j-detail">Licensed security personnel for malls, corporate buildings, and events.</div><div class="j-tag">Training Provided</div></div>
+    <div class="j-card"><span class="j-icon">👨‍🍳</span><div class="j-title">Chefs</div><div class="j-detail">Skilled cooks from sous-chef to head chef for restaurants, hotels, and catering.</div><div class="j-tag">Premium Pay</div></div>
   </div>
 </section>
 
 <!-- REQUIREMENTS -->
-<section class="requirements" id="requirements">
-  <div class="sec-eyebrow">What You Need</div>
-  <h2 class="sec-title">Application <em>Requirements</em></h2>
-  <p class="sec-sub">The following documents are required for your Luxembourg work permit application. Don't worry — we prepare them all for you.</p>
+<section class="req-sec" id="requirements">
+  <div class="sec-header">
+    <div class="eye">What You Need</div>
+    <h2 class="h2">Application <em>Requirements</em></h2>
+    <p class="sec-sub">The following documents are required for your Luxembourg work permit. We prepare them all for you.</p>
+  </div>
   <div class="req-grid">
     <div class="req-list">
-      <div class="req-item">
-        <div class="req-num">1</div>
-        <div class="req-info">
-          <div class="req-name">Europass Curriculum Vitae (CV)</div>
-          <div class="req-desc">An EU-standard Europass CV in English or French detailing your work history, education, and skills.</div>
-          <span class="req-badge required">Required</span>
-        </div>
-      </div>
-      <div class="req-item">
-        <div class="req-num">2</div>
-        <div class="req-info">
-          <div class="req-name">Cover Letter</div>
-          <div class="req-desc">A professional letter of motivation addressed to the Luxembourg employer outlining your suitability.</div>
-          <span class="req-badge required">Required</span>
-        </div>
-      </div>
-      <div class="req-item">
-        <div class="req-num">3</div>
-        <div class="req-info">
-          <div class="req-name">Police Clearance Certificate</div>
-          <div class="req-desc">A clean criminal record certificate issued by your national police or relevant authority, not older than 3 months.</div>
-          <span class="req-badge required">Required</span>
-        </div>
-      </div>
-      <div class="req-item">
-        <div class="req-num">4</div>
-        <div class="req-info">
-          <div class="req-name">Medical Certificate</div>
-          <div class="req-desc">A fitness-for-work medical certificate from a certified doctor confirming you are in good health.</div>
-          <span class="req-badge required">Required</span>
-        </div>
-      </div>
-      <div class="req-item">
-        <div class="req-num">5</div>
-        <div class="req-info">
-          <div class="req-name">Valid Passport</div>
-          <div class="req-desc">A valid international passport with at least 12 months remaining before expiry.</div>
-          <span class="req-badge required">Required</span>
-        </div>
-      </div>
-      <div class="req-item">
-        <div class="req-num">6</div>
-        <div class="req-info">
-          <div class="req-name">Academic / Professional Certificates</div>
-          <div class="req-desc">Relevant academic transcripts, trade certificates, or professional qualifications for your chosen position.</div>
-          <span class="req-badge optional">If Applicable</span>
-        </div>
-      </div>
+      <div class="req-item"><div class="req-num">1</div><div><div class="req-name">Europass Curriculum Vitae (CV)</div><div class="req-desc">An EU-standard Europass CV in English or French detailing your work history, education, and skills.</div><span class="req-badge req-r">Required</span></div></div>
+      <div class="req-item"><div class="req-num">2</div><div><div class="req-name">Cover Letter</div><div class="req-desc">A professional letter of motivation addressed to the Luxembourg employer outlining your suitability.</div><span class="req-badge req-r">Required</span></div></div>
+      <div class="req-item"><div class="req-num">3</div><div><div class="req-name">Police Clearance Certificate</div><div class="req-desc">A clean criminal record certificate issued by your national police or relevant authority, not older than 3 months.</div><span class="req-badge req-r">Required</span></div></div>
+      <div class="req-item"><div class="req-num">4</div><div><div class="req-name">Medical Certificate</div><div class="req-desc">A fitness-for-work medical certificate from a certified doctor confirming you are in good health.</div><span class="req-badge req-r">Required</span></div></div>
+      <div class="req-item"><div class="req-num">5</div><div><div class="req-name">Valid Passport</div><div class="req-desc">A valid international passport with at least 12 months remaining before expiry.</div><span class="req-badge req-r">Required</span></div></div>
+      <div class="req-item"><div class="req-num">6</div><div><div class="req-name">Academic / Professional Certificates</div><div class="req-desc">Relevant academic transcripts, trade certificates, or professional qualifications for your chosen position.</div><span class="req-badge req-o">If Applicable</span></div></div>
     </div>
-    <div class="agency-help-card">
-      <div class="help-badge">🌟 Agency Service</div>
-      <h3 class="help-title">We Prepare All <em>Documents</em> For You</h3>
-      <p class="help-desc">Don't have all the required documents? No problem. Empath Travel Agency offers a complete document preparation service so you can focus on your journey ahead.</p>
-      <div class="help-services">
-        <div class="help-service"><div class="help-check">✓</div> Europass CV writing & formatting</div>
-        <div class="help-service"><div class="help-check">✓</div> Professional cover letter drafting</div>
-        <div class="help-service"><div class="help-check">✓</div> Police clearance application guidance</div>
-        <div class="help-service"><div class="help-check">✓</div> Medical certificate referrals</div>
-        <div class="help-service"><div class="help-check">✓</div> Passport & visa processing support</div>
-        <div class="help-service"><div class="help-check">✓</div> Document translation & notarisation</div>
-        <div class="help-service"><div class="help-check">✓</div> End-to-end application management</div>
-      </div>
-      <div class="help-price">
-        <div class="help-price-label">Document Service Package</div>
-        <div class="help-price-val">Contact Us for Pricing</div>
-        <div class="help-price-note">WhatsApp us on +254 784 292 069 for a quote tailored to your country.</div>
+    <div class="agency-card">
+      <div class="a-badge">🌟 Agency Service</div>
+      <h3 class="a-title">We Prepare All <em>Documents</em> For You</h3>
+      <p class="a-desc">Don't have all the required documents? No problem. Empath Travel Agency offers a complete document preparation service so you can focus on your journey ahead.</p>
+      <div class="a-svcs">
+        <div class="a-svc"><div class="a-chk">✓</div>Europass CV writing & formatting</div>
+        <div class="a-svc"><div class="a-chk">✓</div>Professional cover letter drafting</div>
+        <div class="a-svc"><div class="a-chk">✓</div>Police clearance application guidance</div>
+        <div class="a-svc"><div class="a-chk">✓</div>Medical certificate referrals</div>
+        <div class="a-svc"><div class="a-chk">✓</div>Passport & visa processing support</div>
+        <div class="a-svc"><div class="a-chk">✓</div>Document translation & notarisation</div>
+        <div class="a-svc"><div class="a-chk">✓</div>End-to-end application management</div>
       </div>
       <br/>
-      <a class="btn-gold" href="https://wa.me/254784292069?text=Hello%20Grace%2C%20I%20need%20help%20with%20document%20preparation%20for%20Luxembourg." target="_blank" style="display:inline-block;text-decoration:none;">💬 Enquire via WhatsApp</a>
+      <a class="btn-primary" href="https://wa.me/254784292069?text=Hello%2C%20I%20need%20help%20with%20document%20preparation%20for%20Luxembourg." target="_blank" style="display:inline-block;text-decoration:none;">💬 Enquire via WhatsApp</a>
     </div>
   </div>
 </section>
 
 <!-- APPLICATION FORM -->
-<section class="form-section" id="apply">
-  <div class="form-container">
-    <div style="margin-bottom:3rem;">
-      <div class="sec-eyebrow">Apply Now</div>
-      <h2 class="sec-title">Submit Your <em>Application</em></h2>
-      <p class="sec-sub">Complete the form below. Your unique Application ID will be generated automatically and sent to our team via WhatsApp to begin processing.</p>
+<section class="form-sec" id="apply">
+  <div class="form-wrap">
+    <div class="sec-header">
+      <div class="eye">Begin Your Journey</div>
+      <h2 class="h2">Submit Your <em>Application</em></h2>
+      <p class="sec-sub">Fill in the details below. Your application goes directly to our database and our team will contact you within 24–48 hours.</p>
     </div>
-
     <div class="form-box">
-      <div class="form-box-top-line"></div>
-      <div class="form-box-inner">
-        <div class="form-head">
-          <h3 class="form-h">Luxembourg Job <em>Application Form</em></h3>
-          <p class="form-p">All fields marked with * are required. Ensure all information matches your official documents exactly.</p>
-        </div>
+      <div class="form-inner">
+        <h3 class="form-title">Luxembourg Job <em>Application Form</em></h3>
+        <p class="form-sub">All fields marked * are required. Ensure all information matches your official documents exactly.</p>
 
-        <!-- App ID Preview -->
-        <div class="form-app-id-preview">
-          <div class="app-id-icon">🪪</div>
-          <div class="app-id-info">
-            <div class="app-id-label">Your Application ID (Auto-Generated)</div>
-            <div class="app-id-val" id="liveAppId">LUX-2026-—</div>
-            <div class="app-id-note">This ID is assigned to you upon submission and used to track your application.</div>
+        <div class="appid-box">
+          <div class="appid-icon">🪪</div>
+          <div>
+            <div class="appid-lbl">Your Application ID (Auto-Generated)</div>
+            <div class="appid-val" id="liveId">LUX-2026-—</div>
+            <div class="appid-note">This ID is assigned to you automatically and saved to our database when you submit.</div>
           </div>
         </div>
 
-        <!-- PERSONAL INFO -->
-        <div class="form-section-label">Personal Information</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="f-label" for="fname">Full Name (as on passport) *</label>
-            <input class="f-input" type="text" id="fname" placeholder="e.g. Grace Akello" autocomplete="name"/>
+        <!-- Personal Info -->
+        <div class="sec-lbl">Personal Information</div>
+        <div class="f-row">
+          <div class="f-g">
+            <label class="f-lbl">Full Name (as on passport)<span class="req">*</span></label>
+            <input class="f-in" type="text" id="fname" placeholder="e.g. Grace Akello" autocomplete="name"/>
             <span class="f-err" id="e-fname">Please enter your full name.</span>
           </div>
-          <div class="form-group">
-            <label class="f-label" for="email">Email Address *</label>
-            <input class="f-input" type="email" id="email" placeholder="yourname@email.com" autocomplete="email"/>
-            <span class="f-err" id="e-email">Please enter a valid email address.</span>
+          <div class="f-g">
+            <label class="f-lbl">Email Address<span class="req">*</span></label>
+            <input class="f-in" type="email" id="email" placeholder="yourname@email.com" autocomplete="email"/>
+            <span class="f-err" id="e-email">Please enter a valid email.</span>
           </div>
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="f-label" for="natid">National ID Number *</label>
-            <input class="f-input" type="text" id="natid" placeholder="e.g. 12345678" autocomplete="off"/>
+        <div class="f-row">
+          <div class="f-g">
+            <label class="f-lbl">National ID Number<span class="req">*</span></label>
+            <input class="f-in" type="text" id="natid" placeholder="e.g. 12345678"/>
             <span class="f-err" id="e-natid">Please enter your National ID number.</span>
           </div>
-          <div class="form-group">
-            <label class="f-label" for="country">Country of Residence *</label>
-            <select class="f-select" id="country">
+          <div class="f-g">
+            <label class="f-lbl">Country of Residence<span class="req">*</span></label>
+            <select class="f-sel" id="country">
               <option value="">— Select Your Country —</option>
-              <option>Algeria</option><option>Angola</option><option>Benin</option>
-              <option>Botswana</option><option>Burkina Faso</option><option>Burundi</option>
-              <option>Cabo Verde</option><option>Cameroon</option><option>Central African Republic</option>
-              <option>Chad</option><option>Comoros</option><option>Congo (Brazzaville)</option>
-              <option>Congo (DRC)</option><option>Djibouti</option><option>Egypt</option>
-              <option>Equatorial Guinea</option><option>Eritrea</option><option>Eswatini</option>
-              <option>Ethiopia</option><option>Gabon</option><option>Gambia</option>
-              <option>Ghana</option><option>Guinea</option><option>Guinea-Bissau</option>
-              <option>Ivory Coast</option><option>Kenya</option><option>Lesotho</option>
-              <option>Liberia</option><option>Libya</option><option>Madagascar</option>
-              <option>Malawi</option><option>Mali</option><option>Mauritania</option>
-              <option>Mauritius</option><option>Morocco</option><option>Mozambique</option>
-              <option>Namibia</option><option>Niger</option><option>Nigeria</option>
-              <option>Rwanda</option><option>São Tomé and Príncipe</option><option>Senegal</option>
-              <option>Seychelles</option><option>Sierra Leone</option><option>Somalia</option>
-              <option>South Africa</option><option>South Sudan</option><option>Sudan</option>
-              <option>Tanzania</option><option>Togo</option><option>Tunisia</option>
-              <option>Uganda</option><option>Zambia</option><option>Zimbabwe</option>
+              <option>Algeria</option><option>Angola</option><option>Benin</option><option>Botswana</option><option>Burkina Faso</option><option>Burundi</option><option>Cabo Verde</option><option>Cameroon</option><option>Central African Republic</option><option>Chad</option><option>Comoros</option><option>Congo (Brazzaville)</option><option>Congo (DRC)</option><option>Djibouti</option><option>Egypt</option><option>Equatorial Guinea</option><option>Eritrea</option><option>Eswatini</option><option>Ethiopia</option><option>Gabon</option><option>Gambia</option><option>Ghana</option><option>Guinea</option><option>Guinea-Bissau</option><option>Ivory Coast</option><option>Kenya</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Madagascar</option><option>Malawi</option><option>Mali</option><option>Mauritania</option><option>Mauritius</option><option>Morocco</option><option>Mozambique</option><option>Namibia</option><option>Niger</option><option>Nigeria</option><option>Rwanda</option><option>São Tomé and Príncipe</option><option>Senegal</option><option>Seychelles</option><option>Sierra Leone</option><option>Somalia</option><option>South Africa</option><option>South Sudan</option><option>Sudan</option><option>Tanzania</option><option>Togo</option><option>Tunisia</option><option>Uganda</option><option>Zambia</option><option>Zimbabwe</option>
             </select>
             <span class="f-err" id="e-country">Please select your country.</span>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="f-label" for="phoneNum">Phone / WhatsApp Number *</label>
-          <div class="phone-wrapper">
-            <select class="f-select phone-code" id="phoneCode">
-              <option value="+20">🇪🇬 +20 Egypt</option>
-              <option value="+213">🇩🇿 +213 Algeria</option>
-              <option value="+216">🇹🇳 +216 Tunisia</option>
-              <option value="+218">🇱🇾 +218 Libya</option>
-              <option value="+220">🇬🇲 +220 Gambia</option>
-              <option value="+221">🇸🇳 +221 Senegal</option>
-              <option value="+222">🇲🇷 +222 Mauritania</option>
-              <option value="+223">🇲🇱 +223 Mali</option>
-              <option value="+224">🇬🇳 +224 Guinea</option>
-              <option value="+225">🇨🇮 +225 Ivory Coast</option>
-              <option value="+226">🇧🇫 +226 Burkina Faso</option>
-              <option value="+227">🇳🇪 +227 Niger</option>
-              <option value="+228">🇹🇬 +228 Togo</option>
-              <option value="+229">🇧🇯 +229 Benin</option>
-              <option value="+230">🇲🇺 +230 Mauritius</option>
-              <option value="+231">🇱🇷 +231 Liberia</option>
-              <option value="+232">🇸🇱 +232 Sierra Leone</option>
-              <option value="+233">🇬🇭 +233 Ghana</option>
-              <option value="+234">🇳🇬 +234 Nigeria</option>
-              <option value="+235">🇹🇩 +235 Chad</option>
-              <option value="+236">🇨🇫 +236 C.A.R.</option>
-              <option value="+237">🇨🇲 +237 Cameroon</option>
-              <option value="+238">🇨🇻 +238 Cabo Verde</option>
-              <option value="+239">🇸🇹 +239 São Tomé</option>
-              <option value="+240">🇬🇶 +240 Eq. Guinea</option>
-              <option value="+241">🇬🇦 +241 Gabon</option>
-              <option value="+242">🇨🇬 +242 Congo (B)</option>
-              <option value="+243">🇨🇩 +243 Congo (DRC)</option>
-              <option value="+244">🇦🇴 +244 Angola</option>
-              <option value="+245">🇬🇼 +245 Guinea-Bissau</option>
-              <option value="+248">🇸🇨 +248 Seychelles</option>
-              <option value="+249">🇸🇩 +249 Sudan</option>
-              <option value="+250">🇷🇼 +250 Rwanda</option>
-              <option value="+251">🇪🇹 +251 Ethiopia</option>
-              <option value="+252">🇸🇴 +252 Somalia</option>
-              <option value="+253">🇩🇯 +253 Djibouti</option>
-              <option value="+254" selected>🇰🇪 +254 Kenya</option>
-              <option value="+255">🇹🇿 +255 Tanzania</option>
-              <option value="+256">🇺🇬 +256 Uganda</option>
-              <option value="+257">🇧🇮 +257 Burundi</option>
-              <option value="+258">🇲🇿 +258 Mozambique</option>
-              <option value="+260">🇿🇲 +260 Zambia</option>
-              <option value="+261">🇲🇬 +261 Madagascar</option>
-              <option value="+263">🇿🇼 +263 Zimbabwe</option>
-              <option value="+264">🇳🇦 +264 Namibia</option>
-              <option value="+265">🇲🇼 +265 Malawi</option>
-              <option value="+266">🇱🇸 +266 Lesotho</option>
-              <option value="+267">🇧🇼 +267 Botswana</option>
-              <option value="+268">🇸🇿 +268 Eswatini</option>
-              <option value="+269">🇰🇲 +269 Comoros</option>
-              <option value="+27">🇿🇦 +27 South Africa</option>
-              <option value="+291">🇪🇷 +291 Eritrea</option>
-              <option value="+211">🇸🇸 +211 South Sudan</option>
+        <div class="f-g">
+          <label class="f-lbl">Phone / WhatsApp Number<span class="req">*</span></label>
+          <div class="ph-wrap">
+            <select class="f-sel ph-code" id="pcode">
+              <option value="+20">🇪🇬 +20</option><option value="+213">🇩🇿 +213</option><option value="+216">🇹🇳 +216</option><option value="+218">🇱🇾 +218</option><option value="+220">🇬🇲 +220</option><option value="+221">🇸🇳 +221</option><option value="+222">🇲🇷 +222</option><option value="+223">🇲🇱 +223</option><option value="+224">🇬🇳 +224</option><option value="+225">🇨🇮 +225</option><option value="+226">🇧🇫 +226</option><option value="+227">🇳🇪 +227</option><option value="+228">🇹🇬 +228</option><option value="+229">🇧🇯 +229</option><option value="+230">🇲🇺 +230</option><option value="+231">🇱🇷 +231</option><option value="+232">🇸🇱 +232</option><option value="+233">🇬🇭 +233</option><option value="+234">🇳🇬 +234</option><option value="+235">🇹🇩 +235</option><option value="+236">🇨🇫 +236</option><option value="+237">🇨🇲 +237</option><option value="+238">🇨🇻 +238</option><option value="+239">🇸🇹 +239</option><option value="+240">🇬🇶 +240</option><option value="+241">🇬🇦 +241</option><option value="+242">🇨🇬 +242</option><option value="+243">🇨🇩 +243</option><option value="+244">🇦🇴 +244</option><option value="+245">🇬🇼 +245</option><option value="+248">🇸🇨 +248</option><option value="+249">🇸🇩 +249</option><option value="+250">🇷🇼 +250</option><option value="+251">🇪🇹 +251</option><option value="+252">🇸🇴 +252</option><option value="+253">🇩🇯 +253</option><option value="+254" selected>🇰🇪 +254 Kenya</option><option value="+255">🇹🇿 +255</option><option value="+256">🇺🇬 +256</option><option value="+257">🇧🇮 +257</option><option value="+258">🇲🇿 +258</option><option value="+260">🇿🇲 +260</option><option value="+261">🇲🇬 +261</option><option value="+263">🇿🇼 +263</option><option value="+264">🇳🇦 +264</option><option value="+265">🇲🇼 +265</option><option value="+266">🇱🇸 +266</option><option value="+267">🇧🇼 +267</option><option value="+268">🇸🇿 +268</option><option value="+269">🇰🇲 +269</option><option value="+27">🇿🇦 +27</option><option value="+291">🇪🇷 +291</option><option value="+211">🇸🇸 +211</option>
             </select>
-            <input class="f-input phone-num" type="tel" id="phoneNum" placeholder="700 000 000 (without leading 0)" autocomplete="tel"/>
+            <input class="f-in ph-num" type="tel" id="phone" placeholder="700 000 000 (without leading 0)" autocomplete="tel"/>
           </div>
           <span class="f-err" id="e-phone">Please enter your phone number.</span>
         </div>
 
-        <div class="form-divider"></div>
+        <div class="divider"></div>
 
-        <!-- JOB SELECTION -->
-        <div class="form-section-label">Job Position</div>
-        <div class="form-group">
-          <label class="f-label">Select the Job You Are Applying For *</label>
-          <div class="job-radio-grid">
-            <div class="job-radio"><input type="radio" name="job" id="j1" value="Cleaners"/><label class="job-radio-label" for="j1"><span class="jr-icon">🧹</span>Cleaners</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j2" value="Warehouse Workers"/><label class="job-radio-label" for="j2"><span class="jr-icon">📦</span>Warehouse</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j3" value="Plumbers"/><label class="job-radio-label" for="j3"><span class="jr-icon">🔧</span>Plumbers</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j4" value="Health Care Workers"/><label class="job-radio-label" for="j4"><span class="jr-icon">🏥</span>Health Care Workers</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j5" value="Caregivers"/><label class="job-radio-label" for="j5"><span class="jr-icon">🤝</span>Caregivers</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j6" value="Waiters"/><label class="job-radio-label" for="j6"><span class="jr-icon">🍽</span>Waiters</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j7" value="Hostess"/><label class="job-radio-label" for="j7"><span class="jr-icon">💃</span>Hostess</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j8" value="Truck Drivers"/><label class="job-radio-label" for="j8"><span class="jr-icon">🚛</span>Truck Drivers</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j9" value="Baristas"/><label class="job-radio-label" for="j9"><span class="jr-icon">☕</span>Baristas</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j10" value="Security Guards"/><label class="job-radio-label" for="j10"><span class="jr-icon">🛡</span>Security</label></div>
-            <div class="job-radio"><input type="radio" name="job" id="j11" value="Chefs"/><label class="job-radio-label" for="j11"><span class="jr-icon">👨‍🍳</span>Chefs</label></div>
+        <!-- Job Selection -->
+        <div class="sec-lbl">Job Position</div>
+        <div class="f-g">
+          <label class="f-lbl">Select the Job You Are Applying For<span class="req">*</span></label>
+          <div class="job-grid">
+            <div class="jr"><input type="radio" name="job" id="j1" value="Cleaners"/><label class="jr-lbl" for="j1"><span class="ji">🧹</span>Cleaners</label></div>
+            <div class="jr"><input type="radio" name="job" id="j2" value="Warehouse Workers"/><label class="jr-lbl" for="j2"><span class="ji">📦</span>Warehouse Workers</label></div>
+            <div class="jr"><input type="radio" name="job" id="j3" value="Plumbers"/><label class="jr-lbl" for="j3"><span class="ji">🔧</span>Plumbers</label></div>
+            <div class="jr"><input type="radio" name="job" id="j4" value="Health Care Workers"/><label class="jr-lbl" for="j4"><span class="ji">🏥</span>Health Care Workers</label></div>
+            <div class="jr"><input type="radio" name="job" id="j5" value="Caregivers"/><label class="jr-lbl" for="j5"><span class="ji">🤝</span>Caregivers</label></div>
+            <div class="jr"><input type="radio" name="job" id="j6" value="Waiters"/><label class="jr-lbl" for="j6"><span class="ji">🍽</span>Waiters</label></div>
+            <div class="jr"><input type="radio" name="job" id="j7" value="Hostess"/><label class="jr-lbl" for="j7"><span class="ji">💃</span>Hostess</label></div>
+            <div class="jr"><input type="radio" name="job" id="j8" value="Truck Drivers"/><label class="jr-lbl" for="j8"><span class="ji">🚛</span>Truck Drivers</label></div>
+            <div class="jr"><input type="radio" name="job" id="j9" value="Baristas"/><label class="jr-lbl" for="j9"><span class="ji">☕</span>Baristas</label></div>
+            <div class="jr"><input type="radio" name="job" id="j10" value="Security Guards"/><label class="jr-lbl" for="j10"><span class="ji">🛡</span>Security Guards</label></div>
+            <div class="jr"><input type="radio" name="job" id="j11" value="Chefs"/><label class="jr-lbl" for="j11"><span class="ji">👨‍🍳</span>Chefs</label></div>
           </div>
           <span class="f-err" id="e-job">Please select a job position.</span>
         </div>
 
-        <div class="form-divider"></div>
+        <div class="divider"></div>
 
-        <!-- DOCUMENTS -->
-        <div class="form-section-label">Documents You Currently Have</div>
-        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7;">Tick the documents you already have. For any missing documents, Empath Travel Agency will assist you in obtaining them.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1rem;">
-          <div class="cb-group"><input type="checkbox" id="doc1"/><label class="cb-box" for="doc1"></label><label class="cb-label" for="doc1">Europass CV</label></div>
-          <div class="cb-group"><input type="checkbox" id="doc2"/><label class="cb-box" for="doc2"></label><label class="cb-label" for="doc2">Cover Letter</label></div>
-          <div class="cb-group"><input type="checkbox" id="doc3"/><label class="cb-box" for="doc3"></label><label class="cb-label" for="doc3">Police Clearance Certificate</label></div>
-          <div class="cb-group"><input type="checkbox" id="doc4"/><label class="cb-box" for="doc4"></label><label class="cb-label" for="doc4">Medical Certificate</label></div>
-          <div class="cb-group"><input type="checkbox" id="doc5"/><label class="cb-box" for="doc5"></label><label class="cb-label" for="doc5">Valid Passport</label></div>
-          <div class="cb-group"><input type="checkbox" id="doc6"/><label class="cb-box" for="doc6"></label><label class="cb-label" for="doc6">Academic / Trade Certificates</label></div>
+        <!-- Documents -->
+        <div class="sec-lbl">Documents You Currently Have</div>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7;">Tick the documents you already have. For any missing ones, Empath Travel Agency will assist you.</p>
+        <div class="docs-grid">
+          <label class="doc-item"><input type="checkbox" id="dc1"/><div class="doc-box"></div><span class="doc-lbl">📄 Europass CV</span></label>
+          <label class="doc-item"><input type="checkbox" id="dc2"/><div class="doc-box"></div><span class="doc-lbl">✉️ Cover Letter</span></label>
+          <label class="doc-item"><input type="checkbox" id="dc3"/><div class="doc-box"></div><span class="doc-lbl">🚔 Police Clearance Certificate</span></label>
+          <label class="doc-item"><input type="checkbox" id="dc4"/><div class="doc-box"></div><span class="doc-lbl">🏥 Medical Certificate</span></label>
+          <label class="doc-item"><input type="checkbox" id="dc5"/><div class="doc-box"></div><span class="doc-lbl">📘 Valid Passport</span></label>
+          <label class="doc-item"><input type="checkbox" id="dc6"/><div class="doc-box"></div><span class="doc-lbl">🎓 Academic / Trade Certificates</span></label>
         </div>
 
-        <div class="form-divider"></div>
+        <div class="divider"></div>
 
-        <!-- AGREEMENT -->
-        <div class="form-group" style="margin-bottom:0;">
-          <div class="cb-group">
+        <!-- Agreement -->
+        <div class="f-g">
+          <div class="cb-g">
             <input type="checkbox" id="agree"/>
             <label class="cb-box" for="agree"></label>
-            <label class="cb-label" for="agree">
-              I confirm that all information provided is accurate and truthful. I agree to Empath Travel Agency's <a href="#">Terms & Conditions</a> and consent to being contacted via WhatsApp and email regarding my application. *
-            </label>
+            <label class="cb-lbl" for="agree">I confirm that all information provided is accurate and matches my official documents. I agree to Empath Travel Agency's <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>, and consent to being contacted via WhatsApp and email regarding my application.<span class="req">*</span></label>
           </div>
-          <span class="f-err" id="e-agree" style="margin-left:2.2rem;">You must agree to the terms to submit.</span>
+          <span class="f-err" id="e-agree" style="margin-left:2.2rem;">You must agree to the terms to submit your application.</span>
         </div>
 
         <br/>
-        <button class="submit-btn" id="mainSubmitBtn" type="button" onclick="submitApplication()">
-          <span>✈ Submit Application &amp; Get My ID</span>
+        <button class="submit-btn" id="submitBtn" type="button" onclick="submitApp()">
+          <span>✈ Submit Application</span>
         </button>
-        <div class="wa-note">
-          <span style="color:#25D366">💬</span>
-          <span>A WhatsApp confirmation message will be prepared with your Application ID for you to send to our team.</span>
+        <div style="text-align:center;margin-top:1rem;font-size:.74rem;color:var(--muted);">
+          Your application is saved securely to our database. Our team will contact you within 24–48 hours.
         </div>
       </div>
     </div>
@@ -636,126 +614,247 @@ footer{background:#050b14;padding:3rem 5%;border-top:1px solid var(--border);dis
 
 <!-- FOOTER -->
 <footer>
-  <div class="foot-logo">Empath <span>Travel Agency</span></div>
-  <div class="foot-links">
-    <a href="#">About</a>
-    <a href="#">Jobs</a>
-    <a href="#">Requirements</a>
-    <a href="https://wa.me/254784292069" target="_blank">WhatsApp Us</a>
+  <div class="foot-top">
+    <div>
+      <div class="foot-brand">Empath <span>Travel</span></div>
+      <p class="foot-tag">Crafting extraordinary journeys for those who travel not just to see the world, but to feel it.</p>
+      <a class="foot-contact" href="https://wa.me/254784292069" target="_blank">💬 +254 784 292 069 (WhatsApp)</a>
+      <a class="foot-contact" href="mailto:info@empathtravel.com">✉️ info@empathtravel.com</a>
+      <span class="foot-contact">📍 Nairobi, Kenya</span>
+    </div>
+    <div>
+      <div class="foot-col">Available Jobs</div>
+      <ul class="foot-links">
+        <li><a href="#jobs">Cleaners</a></li><li><a href="#jobs">Plumbers</a></li>
+        <li><a href="#jobs">Caregivers</a></li><li><a href="#jobs">Chefs</a></li>
+        <li><a href="#jobs">View All Jobs</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="foot-col">Services</div>
+      <ul class="foot-links">
+        <li><a href="#requirements">Document Prep</a></li>
+        <li><a href="#">Visa Support</a></li>
+        <li><a href="#">Flight Booking</a></li>
+        <li><a href="#">Settlement Help</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="foot-col">Company</div>
+      <ul class="foot-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Testimonials</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="foot-copy">© 2026 Empath Travel Agency. All rights reserved.</div>
+  <div class="foot-bottom">
+    <div class="foot-copy">© 2026 Empath Travel Agency. All rights reserved.</div>
+    <button class="adm-link" onclick="openAdm()">Admin</button>
+  </div>
 </footer>
 
 <script>
-// Generate Application ID
-function generateAppId() {
-  const rand = Math.floor(10000 + Math.random() * 90000);
-  return 'LUX-2026-' + rand;
-}
-
-// Live ID shown on load
-let currentAppId = generateAppId();
-document.getElementById('liveAppId').textContent = currentAppId;
-
-// Validation helpers
-function setErr(inputId, errId, show) {
-  const el = document.getElementById(inputId);
-  const err = document.getElementById(errId);
-  if (el) { show ? el.classList.add('error') : el.classList.remove('error'); }
-  if (err) { show ? err.classList.add('show') : err.classList.remove('show'); }
-}
-
-function clearErr(inputId, errId) { setErr(inputId, errId, false); }
-
-// Live clear on input
-['fname','email','natid','phoneNum','country'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('input', () => el.classList.remove('error'));
+// Firebase
+firebase.initializeApp({
+  apiKey:"AIzaSyAGqSRYf66YshP0zIbXaTHgnpc0HRh3vm8",
+  authDomain:"empath-26305.firebaseapp.com",
+  projectId:"empath-26305",
+  storageBucket:"empath-26305.firebasestorage.app",
+  messagingSenderId:"294998190200",
+  appId:"1:294998190200:web:9237cd74e91255e43ee58d"
 });
+const db = firebase.firestore();
+
+const PASS = "Empath@2026";
+
+// App ID
+function genId(){ return 'LUX-2026-'+Math.floor(10000+Math.random()*90000); }
+let curId = genId();
+document.getElementById('liveId').textContent = curId;
+
+// Track visitor
+(async()=>{ try{ await db.collection('stats').doc('visitors').set({count:firebase.firestore.FieldValue.increment(1)},{merge:true}); }catch(e){} })();
+
+// Validation helper
+function setE(fi,ei,show){
+  const f=document.getElementById(fi),e=document.getElementById(ei);
+  if(f) show?f.classList.add('err'):f.classList.remove('err');
+  if(e) show?e.classList.add('show'):e.classList.remove('show');
+}
 
 // Submit
-function submitApplication() {
-  const fname   = document.getElementById('fname').value.trim();
-  const email   = document.getElementById('email').value.trim();
-  const natid   = document.getElementById('natid').value.trim();
-  const country = document.getElementById('country').value;
-  const phone   = document.getElementById('phoneNum').value.trim();
-  const code    = document.getElementById('phoneCode').value;
-  const job     = document.querySelector('input[name="job"]:checked');
-  const agree   = document.getElementById('agree').checked;
+async function submitApp(){
+  const fname  = document.getElementById('fname').value.trim();
+  const email  = document.getElementById('email').value.trim();
+  const natid  = document.getElementById('natid').value.trim();
+  const country= document.getElementById('country').value;
+  const phone  = document.getElementById('phone').value.trim();
+  const pcode  = document.getElementById('pcode').value;
+  const job    = document.querySelector('input[name="job"]:checked');
+  const agree  = document.getElementById('agree').checked;
 
-  let valid = true;
+  let ok=true;
+  if(!fname)                      {setE('fname','e-fname',true);   ok=false;} else setE('fname','e-fname',false);
+  if(!email||!email.includes('@')){setE('email','e-email',true);   ok=false;} else setE('email','e-email',false);
+  if(!natid)                      {setE('natid','e-natid',true);   ok=false;} else setE('natid','e-natid',false);
+  if(!country)                    {setE('country','e-country',true);ok=false;} else setE('country','e-country',false);
+  if(!phone)                      {setE('phone','e-phone',true);   ok=false;} else setE('phone','e-phone',false);
+  const je=document.getElementById('e-job'); if(!job){je.classList.add('show');ok=false;}else je.classList.remove('show');
+  const ae=document.getElementById('e-agree'); if(!agree){ae.classList.add('show');ok=false;}else ae.classList.remove('show');
+  if(!ok){ const fe=document.querySelector('.f-err.show'); if(fe)fe.scrollIntoView({behavior:'smooth',block:'center'}); return; }
 
-  if (!fname)                    { setErr('fname','e-fname',true);    valid=false; } else clearErr('fname','e-fname');
-  if (!email||!email.includes('@')){ setErr('email','e-email',true);  valid=false; } else clearErr('email','e-email');
-  if (!natid)                    { setErr('natid','e-natid',true);    valid=false; } else clearErr('natid','e-natid');
-  if (!country)                  { setErr('country','e-country',true);valid=false; } else clearErr('country','e-country');
-  if (!phone)                    { setErr('phoneNum','e-phone',true); valid=false; } else clearErr('phoneNum','e-phone');
+  const docNames=['Europass CV','Cover Letter','Police Clearance','Medical Certificate','Valid Passport','Academic Certificates'];
+  const hasDocs = docNames.filter((_,i)=>document.getElementById('dc'+(i+1)).checked);
+  const needDocs= docNames.filter((_,i)=>!document.getElementById('dc'+(i+1)).checked);
 
-  const jobErr = document.getElementById('e-job');
-  if (!job) { jobErr.classList.add('show'); valid=false; } else jobErr.classList.remove('show');
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='<span>⏳ Saving Application…</span>';
 
-  const agreeErr = document.getElementById('e-agree');
-  if (!agree) { agreeErr.classList.add('show'); valid=false; } else agreeErr.classList.remove('show');
+  const appId=curId;
+  const fullPhone=pcode+phone;
 
-  if (!valid) {
-    const firstErr = document.querySelector('.f-err.show');
-    if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
-    return;
+  try{
+    await db.collection('applications').add({
+      appId, fullName:fname, email, nationalId:natid, country,
+      phone:fullPhone, job:job.value,
+      documentsHave:hasDocs, documentsNeed:needDocs,
+      status:'pending',
+      submittedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    document.getElementById('sId').textContent   = appId;
+    document.getElementById('sMeta').textContent  = fname+' · '+job.value+' · '+country;
+
+    const waMsg=`Hello Grace, my name is ${fname} and I applied for ${job.value} in Luxembourg. My Application ID is ${appId}.\n\n📧 Email: ${email}\n🪪 National ID: ${natid}\n🌍 Country: ${country}\n📱 Phone: ${fullPhone}\n✅ Documents I have: ${hasDocs.join(', ')||'None yet'}\n📂 Documents I need: ${needDocs.join(', ')||'None'}`;
+    document.getElementById('sWaBtn').onclick=()=>window.open('https://wa.me/254784292069?text='+encodeURIComponent(waMsg),'_blank');
+
+    document.getElementById('sOv').classList.add('show');
+    curId=genId(); document.getElementById('liveId').textContent=curId;
+    btn.disabled=false; btn.innerHTML='<span>✈ Submit Application</span>';
+  }catch(err){
+    btn.disabled=false; btn.innerHTML='<span>✈ Submit Application</span>';
+    alert('❌ Error saving application. Please check your connection and try again.\n\n'+err.message);
   }
-
-  // Freeze current ID
-  const appId   = currentAppId;
-  const jobName = job.value;
-  const fullPhone = code + phone;
-
-  // Get docs ticked
-  const docNames = ['Europass CV','Cover Letter','Police Clearance Certificate','Medical Certificate','Valid Passport','Academic/Trade Certificates'];
-  const docIds   = ['doc1','doc2','doc3','doc4','doc5','doc6'];
-  const hasDocs  = docIds.map((id,i) => document.getElementById(id).checked ? docNames[i] : null).filter(Boolean);
-  const missDocs = docNames.filter(d => !hasDocs.includes(d));
-
-  // Build WhatsApp message
-  const waMsg =
-`Hello Grace, my name is ${fname} and I applied for ${jobName} in Luxembourg. My Application ID is ${appId}.
-
-📋 *Application Details*
-👤 Name: ${fname}
-📧 Email: ${email}
-🪪 National ID: ${natid}
-🌍 Country: ${country}
-📱 Phone: ${fullPhone}
-💼 Job Applied: ${jobName}
-🆔 Application ID: ${appId}
-
-✅ Documents I Have: ${hasDocs.length > 0 ? hasDocs.join(', ') : 'None yet'}
-📂 Documents I Need Help With: ${missDocs.length > 0 ? missDocs.join(', ') : 'None'}
-
-_Submitted via Empath Travel Agency Website_`;
-
-  const waURL = 'https://wa.me/254784292069?text=' + encodeURIComponent(waMsg);
-
-  // Populate success overlay
-  document.getElementById('displayAppId').textContent = appId;
-  document.getElementById('displayJobMeta').textContent = fname + ' · ' + jobName + ' · ' + country;
-  document.getElementById('sendWaBtn').onclick = () => window.open(waURL, '_blank');
-
-  // Show overlay
-  document.getElementById('successOverlay').classList.add('show');
-
-  // Regenerate ID for next use
-  currentAppId = generateAppId();
-  document.getElementById('liveAppId').textContent = currentAppId;
 }
 
-function closeSuccess() {
-  document.getElementById('successOverlay').classList.remove('show');
+// Admin
+let allApps=[];
+function openAdm(){ document.getElementById('admOv').classList.add('show'); document.body.style.overflow='hidden'; }
+function closeAdm(){ document.getElementById('admOv').classList.remove('show'); document.body.style.overflow=''; }
+function doLogin(){
+  if(document.getElementById('admPass').value===PASS){
+    document.getElementById('admLogin').style.display='none';
+    document.getElementById('admDash').classList.add('show');
+    document.getElementById('loginErr').classList.remove('show');
+    loadApps();
+  } else {
+    document.getElementById('loginErr').classList.add('show');
+    document.getElementById('admPass').classList.add('err');
+  }
 }
-
-// Close overlay on backdrop click
-document.getElementById('successOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeSuccess();
-});
+function doLogout(){
+  document.getElementById('admLogin').style.display='flex';
+  document.getElementById('admDash').classList.remove('show');
+  document.getElementById('admPass').value='';
+  document.getElementById('admPass').classList.remove('err');
+  closeAdm();
+}
+async function loadApps(){
+  document.getElementById('admBody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--muted);">⏳ Loading applications…</td></tr>';
+  try{
+    const snap=await db.collection('applications').orderBy('submittedAt','desc').get();
+    allApps=[];
+    snap.forEach(doc=>allApps.push({id:doc.id,...doc.data()}));
+    try{
+      const v=await db.collection('stats').doc('visitors').get();
+      document.getElementById('stVis').textContent=(v.exists?v.data().count:0).toLocaleString();
+    }catch(e){document.getElementById('stVis').textContent='—';}
+    renderApps(allApps);
+  }catch(err){
+    document.getElementById('admBody').innerHTML=`<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--red);">❌ Error: ${err.message}</td></tr>`;
+  }
+}
+function renderApps(apps){
+  const todayStr=new Date().toDateString();
+  document.getElementById('stTotal').textContent=apps.length;
+  document.getElementById('stToday').textContent=apps.filter(a=>{if(!a.submittedAt)return false;const d=a.submittedAt.toDate?a.submittedAt.toDate():new Date(a.submittedAt);return d.toDateString()===todayStr;}).length;
+  document.getElementById('stPend').textContent=apps.filter(a=>!a.status||a.status==='pending').length;
+  document.getElementById('stCont').textContent=apps.filter(a=>a.status==='contacted').length;
+  if(!apps.length){document.getElementById('admBody').innerHTML='<tr><td colspan="9"><div class="no-data"><span style="font-size:3rem;display:block;margin-bottom:1rem;">📭</span><div>No applications yet</div></div></td></tr>';return;}
+  let html='';
+  apps.forEach((app,i)=>{
+    const dt=app.submittedAt?(app.submittedAt.toDate?app.submittedAt.toDate():new Date(app.submittedAt)):null;
+    const ds=dt?dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'<br><span style="font-size:.7rem;color:var(--muted)">'+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span>':'—';
+    const st=app.status||'pending';
+    html+=`
+    <tr>
+      <td><div class="app-id">${app.appId||'—'}</div></td>
+      <td><strong>${app.fullName||'—'}</strong><br><span style="font-size:.74rem;color:var(--muted)">${app.email||''}</span></td>
+      <td>${app.nationalId||'—'}</td>
+      <td>${app.phone||'—'}</td>
+      <td>${app.country||'—'}</td>
+      <td>${app.job||'—'}</td>
+      <td style="white-space:nowrap">${ds}</td>
+      <td><select class="st-sel" onchange="updStatus('${app.id}',this.value,${i})">
+        <option value="pending" ${st==='pending'?'selected':''}>🔴 Pending</option>
+        <option value="reviewed" ${st==='reviewed'?'selected':''}>🔵 Reviewed</option>
+        <option value="contacted" ${st==='contacted'?'selected':''}>🟠 Contacted</option>
+        <option value="completed" ${st==='completed'?'selected':''}>🟢 Completed</option>
+      </select></td>
+      <td><button class="exp-btn" onclick="togRow(${i})">View ▾</button></td>
+    </tr>
+    <tr class="det-row" id="dr${i}">
+      <td colspan="9" class="det-cell">
+        <div class="det-grid">
+          <div><div class="det-key">Application ID</div><div class="det-val">${app.appId||'—'}</div></div>
+          <div><div class="det-key">Full Name</div><div class="det-val">${app.fullName||'—'}</div></div>
+          <div><div class="det-key">Email</div><div class="det-val">${app.email||'—'}</div></div>
+          <div><div class="det-key">National ID</div><div class="det-val">${app.nationalId||'—'}</div></div>
+          <div><div class="det-key">Phone</div><div class="det-val">${app.phone||'—'}</div></div>
+          <div><div class="det-key">Country</div><div class="det-val">${app.country||'—'}</div></div>
+          <div><div class="det-key">Job Applied For</div><div class="det-val">${app.job||'—'}</div></div>
+          <div><div class="det-key">Documents Have</div><div class="det-val">${(app.documentsHave||[]).join(', ')||'None'}</div></div>
+          <div><div class="det-key">Documents Need</div><div class="det-val">${(app.documentsNeed||[]).join(', ')||'None'}</div></div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.8rem;">
+          <a href="https://wa.me/${(app.phone||'').replace(/[^0-9]/g,'')}" target="_blank" style="background:#25D366;color:#fff;padding:.5rem 1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">💬 WhatsApp</a>
+          <a href="mailto:${app.email||''}" style="background:var(--gold);color:var(--navy);padding:.5rem 1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">✉ Email</a>
+        </div>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('admBody').innerHTML=html;
+}
+function togRow(i){
+  const r=document.getElementById('dr'+i);
+  const open=r.classList.contains('open');
+  document.querySelectorAll('.det-row').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.exp-btn').forEach(b=>b.textContent='View ▾');
+  if(!open){ r.classList.add('open'); document.querySelectorAll('.exp-btn')[i].textContent='Close ▴'; }
+}
+async function updStatus(docId,val,idx){
+  try{
+    await db.collection('applications').doc(docId).update({status:val});
+    allApps[idx].status=val;
+    document.getElementById('stPend').textContent=allApps.filter(a=>!a.status||a.status==='pending').length;
+    document.getElementById('stCont').textContent=allApps.filter(a=>a.status==='contacted').length;
+  }catch(e){alert('Error updating: '+e.message);}
+}
+function filterApps(){
+  const q=document.getElementById('aSearch').value.toLowerCase();
+  const st=document.getElementById('aStatus').value;
+  const jb=document.getElementById('aJob').value;
+  renderApps(allApps.filter(a=>{
+    const mq=!q||[a.appId,a.fullName,a.email,a.job,a.country,a.phone,a.nationalId].join(' ').toLowerCase().includes(q);
+    const ms=!st||(a.status||'pending')===st;
+    const mj=!jb||(a.job||'').includes(jb);
+    return mq&&ms&&mj;
+  }));
+}
+document.getElementById('admPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('sOv').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
 </script>
 </body>
 </html>
