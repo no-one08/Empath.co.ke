@@ -273,6 +273,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .det-val{font-size:.85rem;color:var(--white);line-height:1.5;}
 .no-data{text-align:center;padding:4rem;color:var(--muted);}
 
+/* Message preview box */
+.msg-preview{background:rgba(255,255,255,.03);border:1px solid var(--bdim);padding:1rem 1.2rem;margin-top:1rem;border-radius:2px;}
+.msg-preview-lbl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.msg-preview-text{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+
 /* FOOTER */
 footer{background:#060e1c;padding:5rem 5% 2.5rem;border-top:1px solid var(--border);}
 .foot-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;padding-bottom:4rem;border-bottom:1px solid rgba(201,168,76,.1);}
@@ -776,6 +781,51 @@ async function loadApps(){
     document.getElementById('admBody').innerHTML=`<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--red);">❌ Error: ${err.message}</td></tr>`;
   }
 }
+
+// Build auto-generated message strings for a given applicant
+function buildWaMsg(app){
+  const docsHave = (app.documentsHave||[]).join(', ') || 'None listed';
+  const docsNeed = (app.documentsNeed||[]).join(', ') || 'None';
+  return 'Hello ' + (app.fullName||'') + ',\n\n'
+    + 'Thank you for applying to Empath Travel Agency. We have received your application for the position of *' + (app.job||'') + '* in Luxembourg.\n\n'
+    + '📋 *Application Details:*\n'
+    + '• Application ID: ' + (app.appId||'—') + '\n'
+    + '• Full Name: ' + (app.fullName||'—') + '\n'
+    + '• National ID: ' + (app.nationalId||'—') + '\n'
+    + '• Country: ' + (app.country||'—') + '\n'
+    + '• Phone: ' + (app.phone||'—') + '\n'
+    + '• Job Applied For: *' + (app.job||'—') + '*\n'
+    + '• Documents You Have: ' + docsHave + '\n'
+    + '• Documents Still Needed: ' + docsNeed + '\n\n'
+    + 'Our team will be in touch shortly to guide you through the next steps. Please keep your Application ID handy for reference.\n\n'
+    + 'Best regards,\n*Empath Travel Agency*\n📍 Nairobi, Kenya';
+}
+
+function buildEmailSubject(app){
+  return 'Your Luxembourg Job Application – ' + (app.appId||'') + ' | Empath Travel Agency';
+}
+
+function buildEmailBody(app){
+  const docsHave = (app.documentsHave||[]).join(', ') || 'None listed';
+  const docsNeed = (app.documentsNeed||[]).join(', ') || 'None';
+  return 'Dear ' + (app.fullName||'') + ',\n\n'
+    + 'Thank you for applying to Empath Travel Agency. We are pleased to confirm receipt of your application for the position of ' + (app.job||'') + ' in Luxembourg.\n\n'
+    + 'Application Details:\n'
+    + '──────────────────────────────\n'
+    + '• Application ID   : ' + (app.appId||'—') + '\n'
+    + '• Full Name        : ' + (app.fullName||'—') + '\n'
+    + '• National ID      : ' + (app.nationalId||'—') + '\n'
+    + '• Country          : ' + (app.country||'—') + '\n'
+    + '• Phone            : ' + (app.phone||'—') + '\n'
+    + '• Job Applied For  : ' + (app.job||'—') + '\n'
+    + '• Documents You Have   : ' + docsHave + '\n'
+    + '• Documents Still Needed: ' + docsNeed + '\n'
+    + '──────────────────────────────\n\n'
+    + 'Our team will review your application and contact you within 24–48 hours with further instructions.\n\n'
+    + 'Please keep your Application ID (' + (app.appId||'—') + ') for future reference.\n\n'
+    + 'Warm regards,\nEmpath Travel Agency Team\n📍 Nairobi, Kenya\n📞 +254 784 292 069\n✉ info@empathtravel.com';
+}
+
 function renderApps(apps){
   const todayStr=new Date().toDateString();
   document.getElementById('stTotal').textContent=apps.length;
@@ -788,6 +838,10 @@ function renderApps(apps){
     const dt=app.submittedAt?(app.submittedAt.toDate?app.submittedAt.toDate():new Date(app.submittedAt)):null;
     const ds=dt?dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'<br><span style="font-size:.7rem;color:var(--muted)">'+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span>':'—';
     const st=app.status||'pending';
+    const waMsg = buildWaMsg(app);
+    const emailSubject = buildEmailSubject(app);
+    const emailBody = buildEmailBody(app);
+    const waNum = (app.phone||'').replace(/[^0-9]/g,'');
     html+=`
     <tr>
       <td><div class="app-id">${app.appId||'—'}</div></td>
@@ -818,9 +872,16 @@ function renderApps(apps){
           <div><div class="det-key">Documents Have</div><div class="det-val">${(app.documentsHave||[]).join(', ')||'None'}</div></div>
           <div><div class="det-key">Documents Need</div><div class="det-val">${(app.documentsNeed||[]).join(', ')||'None'}</div></div>
         </div>
-        <div style="margin-top:1rem;display:flex;gap:.8rem;">
-          <a href="https://wa.me/${(app.phone||'').replace(/[^0-9]/g,'')}" target="_blank" style="background:#25D366;color:#fff;padding:.5rem 1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">💬 WhatsApp</a>
-          <a href="mailto:${app.email||''}" style="background:var(--gold);color:var(--navy);padding:.5rem 1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">✉ Email</a>
+        <div style="margin-top:1.2rem;">
+          <div style="font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;">📨 Contact Applicant — Auto-Generated Messages</div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+            <a href="https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}" target="_blank" style="background:#25D366;color:#fff;padding:.55rem 1.1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;">💬 Send WhatsApp Message</a>
+            <a href="mailto:${app.email||''}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}" style="background:var(--gold);color:var(--navy);padding:.55rem 1.1rem;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;">✉ Send Email</a>
+          </div>
+          <div class="msg-preview">
+            <div class="msg-preview-lbl">💬 WhatsApp message preview</div>
+            <div class="msg-preview-text">${waMsg.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
+          </div>
         </div>
       </td>
     </tr>`;
